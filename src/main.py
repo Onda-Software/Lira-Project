@@ -1,106 +1,44 @@
 import tensorflow as tf
 import numpy as np
+import time
+
+start_time = time.time()
 
 # Conjunto de dados de entrada
-x_train = tf.constant([
-    [1, 2],
-    [3, 4],
-    [5, 6],
-    [7, 8],
-    [9, 10],
-    [11, 12],
-    [13, 14],
-    [15, 16],
-    [17, 18],
-    [19, 20]
-])
+x_train = tf.constant([[1, 2], [3, 4], [5, 6], [7, 8], [9, 10], [11, 12], [13, 14], [15, 16], [17, 18], [19, 20]])
 
 # Conjunto de dadso de saída
-y_train = tf.constant([
-    [3],
-    [7],
-    [11],
-    [19],
-    [29],
-    [39],
-    [49],
-    [59],
-    [69],
-    [79]
-])
+y_train = tf.constant([[3], [7], [11], [15], [19], [23], [27], [31], [35], [39]])
 
 # Criação do modelo (construção senquencial com camadas de conexão completa)
 model = tf.keras.Sequential([
-  tf.keras.layers.Dense(128, activation='relu'),
-  tf.keras.layers.Dense(64, activation='relu'),
-  tf.keras.layers.Dense(1, activation='sigmoid')
+   tf.keras.layers.Dense(1, use_bias=False),
 ])
 
 # Compilação do modelo
 # Adam (Estimativa de Momento Adaptativo)
 # MSE (Erros Quadráticos Médios)
 model.compile(optimizer='adam', loss='mse')
-model.fit(x_train, y_train, epochs=100)
+model.fit(x_train, y_train, epochs=100000)
 
-# Teste do modelo (Não está preciso)
-x_test = tf.constant([[7, 1]])
+# Teste do modelo
+x_test1 = tf.constant([[8, 7]])
+x_test2 = tf.constant([[10, 30]])
+x_test3 = tf.constant([[2, 9]])
 
 # Realizar a previsão como forma de teste
-prediction = model.predict(x_test)
-prediction = np.squeeze(prediction)
+prediction1 = model.predict(x_test1)
+prediction1 = np.squeeze(prediction1)
 
-print("\nPredictions:", prediction)
+prediction2 = model.predict(x_test2)
+prediction2 = np.squeeze(prediction2)
 
-# MLP, pesos e bias
+prediction3 = model.predict(x_test3)
+prediction3 = np.squeeze(prediction3)
 
+end_time = time.time()
 
+print("\nPredictions:", prediction1, " | ", prediction2, " | ", prediction3)
+print("Valores Esperados:", x_test1[0][0] + x_test1[0][1], " | ", x_test2[0][0] + x_test2[0][1], " | ", x_test3[0][0] + x_test3[0][1])
 
-
-
-
-
-import tensorflow as tf
-import tensorflow_probability as tfp
-
-# Pretend to load synthetic data set.
-features = tfp.distributions.Normal(loc=0., scale=1.).sample(int(100e3))
-labels = tfp.distributions.Bernoulli(logits=1.618 * features).sample()
-
-# Specify model.
-model = tfp.glm.Bernoulli()
-
-# Fit model given data.
-coeffs, linear_response, is_converged, num_iter = tfp.glm.fit(
-    model_matrix=features[:, tf.newaxis],
-    response=tf.cast(labels, dtype=tf.float32),
-    model=model)
-# ==> coeffs is approximately [1.618] (We're golden!)
-
-print(coeffs)
-
-
-
-
-
-
-
-import tensorflow_hub as hub
-
-model = hub.KerasLayer("https://tfhub.dev/google/nnlm-en-dim128/2")
-embeddings = model(["The rain in Spain.", "falls", "mainly", "In the plain!"])
-
-print(embeddings.shape)  #(4,128)
-
-
-
-
-
-import os
-import shutil
-
-import tensorflow as tf
-import tensorflow_hub as hub
-import tensorflow_text as text
-import matplotlib.pyplot as plt
-
-tf.get_logger().setLevel('ERROR')
+print("Excecution time is: ", end_time - start_time)

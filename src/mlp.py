@@ -20,6 +20,7 @@ model = tf.keras.Sequential([
 # MSE (Erros Quadráticos Médios)
 model.compile(optimizer='adam', loss='mse')
 model.fit(x_train, y_train, epochs=100000)
+model.summary()
 
 # Teste do modelo
 x_test1 = tf.constant([[8, 7]])

@@ -19,7 +19,7 @@ model = tf.keras.Sequential([
 # Adam (Estimativa de Momento Adaptativo)
 # MSE (Erros Quadráticos Médios)
 model.compile(optimizer='adam', loss='mse')
-model.fit(x_train, y_train, epochs=100000)
+model.fit(x_train, y_train, epochs=60000)
 model.summary()
 
 # Teste do modelo
@@ -31,15 +31,13 @@ x_test3 = tf.constant([[2, 9]])
 prediction1 = model.predict(x_test1)
 prediction1 = np.squeeze(prediction1)
 
-prediction2 = model.predict(x_test2)
-prediction2 = np.squeeze(prediction2)
-
-prediction3 = model.predict(x_test3)
-prediction3 = np.squeeze(prediction3)
-
 end_time = time.time()
-
-print("\nPredictions:", prediction1, " | ", prediction2, " | ", prediction3)
-print("Valores Esperados:", x_test1[0][0] + x_test1[0][1], " | ", x_test2[0][0] + x_test2[0][1], " | ", x_test3[0][0] + x_test3[0][1])
-
 print("Excecution time is: ", end_time - start_time)
+
+while True:
+    value1 = int(input("\nFirst value for sum prediction:  "))
+    value2 = int(input("Second value for sum prediction: "))
+    prediction = np.squeeze(model.predict(tf.constant([[value1, value2]])))
+    print("Prediction value: ", prediction)
+    print("Expected: ", tf.keras.backend.eval(value1 + value2))
+

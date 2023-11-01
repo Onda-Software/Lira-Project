@@ -40,4 +40,3 @@ while True:
     prediction = np.squeeze(model.predict(tf.constant([[value1, value2]])))
     print("Prediction value: ", prediction)
     print("Expected: ", tf.keras.backend.eval(value1 + value2))
-

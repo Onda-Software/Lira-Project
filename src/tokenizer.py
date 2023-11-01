@@ -23,4 +23,3 @@ tokenized_docs = docs.map(lambda x: tokenizer.tokenize(x))
 iterator = iter(tokenized_docs)
 print(next(iterator).to_list())
 print(next(iterator).to_list())
-

@@ -1,15 +1,27 @@
+from database import MongoDatabase
 import tensorflow as tf
-from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
 import numpy as np
+import json
 
-# Dados de exemplo
-text = "Este é um exemplo de previsão de texto usando TensorFlow em Python. Vamos construir um modelo de linguagem simples."
+client = MongoDatabase('test_database', 'test_collection')
+client.connect()
 
+json_datas = json.load(open('../database/data/data.json'))
+MongoDatabase.insert(json_datas)
+
+datas = MongoDatabase.get_datas()
+
+global text
+text = ""
+
+print(datas)
 # Tokenização do texto
-tokenizer = Tokenizer()
-tokenizer.fit_on_texts([text])
+tokenizer = tf.keras.preprocessing.text.Tokenizer()
+
+for data in datas:
+    tokenizer.fit_on_texts([data['text']])
+    print(data['text'])
+
 total_words = len(tokenizer.word_index) + 1
 
 # Sequências de treinamento
@@ -22,11 +34,11 @@ for i in range(1, len(text.split())):
 # Preparação de dados de entrada e saída
 max_sequence_length = max([len(seq) for seq in input_sequences])
 sequences = tokenizer.texts_to_sequences(input_sequences)
-sequences = np.array(pad_sequences(sequences, maxlen=max_sequence_length, padding='pre'))
+sequences = np.array(tf.keras.preprocessing.sequence.pad_sequences(sequences, maxlen=max_sequence_length, padding='pre'))
 x, y = sequences[:, :-1], sequences[:, -1]
 
 # Conversão de y em matriz one-hot
-y = to_categorical(y, num_classes=total_words)
+y = tf.keras.utils.to_categorical(y, num_classes=total_words)
 
 # Verificações
 print("Total unique words:", total_words)
@@ -49,7 +61,7 @@ model.fit(x, y, epochs=50000)
 def generate_text(seed_text, next_words, model, max_sequence_length):
     for _ in range(next_words):
         token_list = tokenizer.texts_to_sequences([seed_text])[0]
-        token_list = pad_sequences([token_list], maxlen=max_sequence_length-1, padding='pre')
+        token_list = tf.keras.preprocessing.sequence.pad_sequences([token_list], maxlen=max_sequence_length-1, padding='pre')
         predicted_probabilities = model.predict(token_list)[0]
         
         # Escolher a próxima palavra com base na probabilidade
@@ -63,6 +75,5 @@ def generate_text(seed_text, next_words, model, max_sequence_length):
     return seed_text
 
 # Geração de texto
-generated_text = generate_text("Este é", 15, model, max_sequence_length)
+generated_text = generate_text("Text for", 2, model, max_sequence_length)
 print(generated_text)
-

@@ -1,6 +1,5 @@
 import tensorflow as tf
 import numpy as np
-import joblib
 
 class TextCompletionModel():
 
@@ -9,13 +8,13 @@ class TextCompletionModel():
         self.dataset = dataset
 
 
-    def load_model(self, path):
+    def load_model(path):
     
         return tf.keras.models.load_model(path)
-        
-    def build_model(self):
-    
-   		# Tokenização do texto
+
+    def mount_tokens(self):
+
+        # Tokenização do texto
         tokenizer = tf.keras.preprocessing.text.Tokenizer()
         input_sequences = []
         total_words = ""
@@ -50,7 +49,15 @@ class TextCompletionModel():
         print(f"Dimensions of x: ({x.shape})")
         print(f"Dimensions of y: ({y.shape})")
         print("=================================================================")
+
+        return x, y, tokenizer, max_sequence_length    
+ 
+        
+    def build_model(self):
     
+        x, y, tokenizer, max_sequence_length = TextCompletionModel.mount_tokens(self)
+        total_words = len(tokenizer.word_index)
+
         # Construção do modelo
         model = tf.keras.models.Sequential()
         model.add(tf.keras.layers.Embedding(total_words, 100, input_length=max_sequence_length - 1))
@@ -61,34 +68,33 @@ class TextCompletionModel():
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
         # Treinamento do modelo
-        model.fit(x, y, epochs=500000)
+        model.fit(x, y, epochs=50000)
         model.summary()
 
         model.save("./models/sequential.keras")
-
-        with open('./tokenizers/tokenizer.gz', 'wb') as hadle:
-            joblib.dump(tokenizer, hadle)
         
 
     def predict_text(self, seed_text, next_words, model):
-             
-        tokenizer = joblib.load('./tokenizers/tokenizer.gz')
-
+        
+        x, y, tokenizer, max_sequence_length = TextCompletionModel.mount_tokens(self)
+        print(x, y, tokenizer, max_sequence_length)
         for _ in range(next_words):
-
+        
             token_list = tokenizer.texts_to_sequences([seed_text])[0]
-            token_list = tf.keras.preprocessing.sequence.pad_sequences([token_list], maxlen=6, padding='pre')
+            token_list = tf.keras.preprocessing.sequence.pad_sequences([token_list], maxlen=max_sequence_length-1, padding='pre')
             predicted_probabilities = model.predict(token_list)[0]
         
             # Escolher a próxima palavra com base na probabilidade
             predicted_index = np.argmax(predicted_probabilities)
             output_word = ""
-         
+        
             for word, index in tokenizer.word_index.items():
+                
                 if index == predicted_index:
                     output_word = word
                     break
-            seed_text += " " + output_word
+            
+                seed_text += " " + output_word
         
         return seed_text
 

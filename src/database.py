@@ -7,7 +7,8 @@ class MongoDatabase:
         self.collection_name = collection_name
 
     def connect(self):
-        
+       
+        global client
         client = pymongo.MongoClient()
 
         if(client):
@@ -24,9 +25,8 @@ class MongoDatabase:
 
         return database, collection
 
-    def insert(data):
+    def insert(self, data):
         
-        data = data
         if(connect_state != True):
            raise ConnectionError
 
@@ -35,7 +35,7 @@ class MongoDatabase:
 
         return collection.insert_many(data)
 
-    def get_datas():
+    def get_datas(self):
         
         datas = []
 

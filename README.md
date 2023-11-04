@@ -8,15 +8,15 @@ O Projeto Luna é uma ideia de uma assistente virtual/inteligencia artificial fe
 
 ## Linguagens
 
-- Python v.3.11.5
+- Python v.3.11.6
 
 ## Ambientes
 
 - Lunar Vim
-- VSCodium
 
 ## Bibliotecas / Importações
 
 - tensorflow v.2.14.0
-
-``` python3 -m pip install tensorflow ```
+- numpy v.1.24.2
+- pymongo v.4.5.0
+- joblib v.1.3.2

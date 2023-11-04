@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import joblib
+import datetime
 
 class TextCompletionModel():
 
@@ -8,14 +9,22 @@ class TextCompletionModel():
     
         self.dataset = dataset
 
-
     def load_model(self, path):
     
         return tf.keras.models.load_model(path)
         
     def build_model(self):
-    
-   		# Tokenização do texto
+   
+        print("Version: ", tf.__version__)
+        print("Eager mode: ", tf.executing_eagerly())
+        print("GPU is", "available" if tf.config.list_physical_devices("GPU") else "NOT AVAILABLE")
+
+        tf.debugging.experimental.enable_dump_debug_info(
+            dump_root='../logs/dumps',
+            tensor_debug_mode='FULL_HEALTH',
+            circular_buffer_size=-1
+        )
+        
         tokenizer = tf.keras.preprocessing.text.Tokenizer()
         input_sequences = []
         total_words = ""
@@ -27,43 +36,37 @@ class TextCompletionModel():
 
             total_words = len(tokenizer.word_index) + 1
 
-            # Sequências de treinamento
-
             for i in range(1, len(text.split())):
 
                 n_gram_sequence = text.split()[:i+1]
                 input_sequences.append(n_gram_sequence)
 
-
-        # Preparação de dados de entrada e saída
         max_sequence_length = max([len(seq) for seq in input_sequences])
+        
         sequences = tokenizer.texts_to_sequences(input_sequences)
         sequences = np.array(tf.keras.preprocessing.sequence.pad_sequences(sequences, maxlen=max_sequence_length, padding='pre'))
-        x, y = sequences[:, :-1], sequences[:, -1]
 
-        # Conversão de y em matriz one-hot
+        x, y = sequences[:, :-1], sequences[:, -1]
         y = tf.keras.utils.to_categorical(y, num_classes=total_words)
         
-        # Verificações
         print("=================================================================")
         print(f"Total unique words: ({total_words})")
         print(f"Dimensions of x: ({x.shape})")
         print(f"Dimensions of y: ({y.shape})")
         print("=================================================================")
     
-        # Construção do modelo
         model = tf.keras.models.Sequential()
         model.add(tf.keras.layers.Embedding(total_words, 100, input_length=max_sequence_length - 1))
         model.add(tf.keras.layers.LSTM(100))
         model.add(tf.keras.layers.Dense(total_words, activation='softmax'))
 
-        # Compilação do modelo
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-        # Treinamento do modelo
-        model.fit(x, y, epochs=500000)
+        log_dir = "../logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)  
+        
+        model.fit(x=x, y=y, validation_data=[x, y] ,epochs=500000, callbacks=[tensorboard_callback])
         model.summary()
-
         model.save("./models/sequential.keras")
 
         with open('./tokenizers/tokenizer.gz', 'wb') as hadle:
@@ -91,4 +94,3 @@ class TextCompletionModel():
             seed_text += " " + output_word
         
         return seed_text
-

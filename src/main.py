@@ -5,11 +5,11 @@ import os
 
 if __name__ == "__main__":
 
-    client = MongoDatabase('test_database', 'test_database')
+    client = MongoDatabase('test_database', 'test_collection')
     client.connect()
 
     json_datas = load(open('../database/data/data.json'))
-    #client.insert(json_datas)
+    client.insert(json_datas)
 
     dataset = MongoDatabase.get_datas(client)
     textCompletionModel = TextCompletionModel(dataset)
@@ -22,12 +22,15 @@ if __name__ == "__main__":
         
         else:
             
-            while True:
-   
-                model = textCompletionModel.load_model('./models/sequential.keras')
+            model = textCompletionModel.load_model('./models/sequential.keras')
      
-                text_predict = str(input("\nPlease enter a pre text for predict: "))
+            while True:
+                
+                print("\n=================================================================")
+
+                text_predict = str(input("Please enter a pre text for predict: "))
                 size_predict = int(input("Plese enter with a size for predict: "))
                 generated_text = textCompletionModel.predict_text(text_predict, size_predict, model)
-                print(f"\nPredicted text is: {generated_text}\n")
+                print(f"\nPredicted text is: {generated_text}")
 
+                print("=================================================================\n")

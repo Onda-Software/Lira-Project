@@ -13,17 +13,18 @@ class TextCompletionModel():
     
         return tf.keras.models.load_model(path)
         
-    def build_model(self):
+    def build_model(self, debug=False, log=False):
    
         print("Version: ", tf.__version__)
         print("Eager mode: ", tf.executing_eagerly())
         print("GPU is", "available" if tf.config.list_physical_devices("GPU") else "NOT AVAILABLE")
-
-        tf.debugging.experimental.enable_dump_debug_info(
-            dump_root='../logs/dumps',
-            tensor_debug_mode='FULL_HEALTH',
-            circular_buffer_size=-1
-        )
+        
+        if debug == True:
+            tf.debugging.experimental.enable_dump_debug_info(
+                dump_root='../logs/dumps',
+                tensor_debug_mode='FULL_HEALTH',
+                circular_buffer_size=-1
+            )
         
         tokenizer = tf.keras.preprocessing.text.Tokenizer()
         input_sequences = []
@@ -62,10 +63,16 @@ class TextCompletionModel():
 
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-        log_dir = "../logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-        tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)  
+        if log == True:
+
+            log_dir = "../logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+            tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)   
+            
+            model.fit(x=x, y=y, validation_data=[x, y], epochs=1000, callbacks=[tensorboard_callback])
         
-        model.fit(x=x, y=y, validation_data=[x, y] ,epochs=500000, callbacks=[tensorboard_callback])
+        else:
+            model.fit(x=x, y=y, validation_data=[x, y], epochs=1000)
+
         model.summary()
         model.save("./models/sequential.keras")
 
@@ -80,7 +87,7 @@ class TextCompletionModel():
         for _ in range(next_words):
 
             token_list = tokenizer.texts_to_sequences([seed_text])[0]
-            token_list = tf.keras.preprocessing.sequence.pad_sequences([token_list], maxlen=6, padding='pre')
+            token_list = tf.keras.preprocessing.sequence.pad_sequences([token_list], maxlen=13, padding='pre')
             predicted_probabilities = model.predict(token_list)[0]
         
             # Escolher a próxima palavra com base na probabilidade

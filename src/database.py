@@ -43,4 +43,3 @@ class MongoDatabase:
             datas.append(data)
        
         return datas
-

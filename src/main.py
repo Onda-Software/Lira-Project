@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
         if(os.path.exists('./models/sequential.keras') == False):
         
-            textCompletionModel.build_model()
+            textCompletionModel.build_model(debug=False, log=False)
         
         else:
             

@@ -1,5 +1,5 @@
-from database import MongoDatabase
-from model import TextCompletionModel
+from src.database import MongoDatabase
+from src.model import TextCompletionModel
 from json import load
 import sys
 import os
@@ -9,7 +9,7 @@ if __name__ == "__main__":
     client = MongoDatabase('test_database', 'test_collection')
     client.connect()
 
-    json_datas = load(open('../database/data/data.json'))
+    json_datas = load(open('./database/data/data.json'))
     #client.insert(json_datas)
 
     dataset = MongoDatabase.get_datas(client)

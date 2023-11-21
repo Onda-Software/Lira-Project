@@ -40,8 +40,13 @@ if __name__ == "__main__":
         print("\n=================================================================")
 
         text_predict = str(input("Please enter a pre text for predict: "))
+        
+        if(text_predict == "exit()"):
+            break
+        
         size_predict = int(input("Plese enter with a size for predict: "))
         generated_text = textCompletionModel.predict_text(text_predict, size_predict, model)
         print(f"\nPredicted text is: {generated_text}")
 
         print("=================================================================\n")
+

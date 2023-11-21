@@ -4,4 +4,3 @@ joblib
 tensorflow
 tensorflow-text
 tensorflow-hub
-tensorflow-gpu

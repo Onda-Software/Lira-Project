@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
         if(os.path.exists('./models/windows/sequential.keras') == False):
     
-            textCompletionModel.build_model(debug=False, log=False)
+            textCompletionModel.build_model(system="windows" ,debug=False, log=False)
         
         model = textCompletionModel.load_model('./models/windows/sequential.keras')
     
@@ -30,7 +30,7 @@ if __name__ == "__main__":
         
         if(os.path.exists('./models/unix/sequential.keras') == False):
 
-            textCompletionModel.build_model(debug=False, log=False)
+            textCompletionModel.build_model(system="unix" ,debug=False, log=False)
         
         model = textCompletionModel.load_model('./models/unix/sequential.keras')
 

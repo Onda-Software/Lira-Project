@@ -16,7 +16,7 @@ class TextCompletionModel():
     
         return tf.keras.models.load_model(path)
         
-    def build_model(self, debug=False, log=False):
+    def build_model(self, system="unix" ,debug=False, log=False):
    
         print("Version: ", tf.__version__)
         print("Eager mode: ", tf.executing_eagerly())
@@ -31,33 +31,54 @@ class TextCompletionModel():
         
         tokenizer = tf.keras.preprocessing.text.Tokenizer()
         input_sequences = []
-        total_words = ""
+        total_words = 0x00
+        total_sequences = 0x00
 
         for data in self.dataset:
-
             text = data['text']
             tokenizer.fit_on_texts([text])
+            
+            for index in range(1, len(text.split())):
+			
+                x_anagram_sequences = text.split()[:index]
+                y_anagram_sequences = text.split()[index:]
+                z_anagram_sequences = text.split()[index-1:index+1]
+			
+                if(x_anagram_sequences!=[] and y_anagram_sequences!=[] and z_anagram_sequences!= []):   
+                
+                    input_sequences.append(x_anagram_sequences)
+                    total_sequences+=1
 
-            total_words = len(tokenizer.word_index) + 1
+                    input_sequences.append(y_anagram_sequences)
+                    total_sequences+=1
 
-            for i in range(1, len(text.split())):
+                    input_sequences.append(z_anagram_sequences)
+                    total_sequences+=1
 
-                n_gram_sequence = text.split()[:i+1]
-                input_sequences.append(n_gram_sequence)
+            input_sequences.append([text])
+            print(text)
+            for element in range(1, len(input_sequences)-1):
+            
+                if(input_sequences[element]==input_sequences[element-1]):
+                    del input_sequences[element-1]
+                    total_sequences-=1
 
         max_sequence_length = max([len(seq) for seq in input_sequences])
         
         sequences = tokenizer.texts_to_sequences(input_sequences)
         sequences = np.array(tf.keras.preprocessing.sequence.pad_sequences(sequences, maxlen=max_sequence_length, padding='pre'))
 
+        total_words = (len(tokenizer.word_index) + 1)
+
         x, y = sequences[:, :-1], sequences[:, -1]
         y = tf.keras.utils.to_categorical(y, num_classes=total_words)
         
-        print("=================================================================")
+        print("============================================")
+        print(f"Total unique sequences: ({total_sequences+1})")
         print(f"Total unique words: ({total_words})")
         print(f"Dimensions of x: ({x.shape})")
         print(f"Dimensions of y: ({y.shape})")
-        print("=================================================================")
+        print("============================================")
     
         model = tf.keras.models.Sequential()
         model.add(tf.keras.layers.Embedding(total_words, 100, input_length=max_sequence_length - 1))
@@ -77,7 +98,7 @@ class TextCompletionModel():
             model.fit(x=x, y=y, validation_data=[x, y], epochs=1000)
 
         model.summary()
-        model.save("./models/sequential.keras")
+        model.save(f"./models/{system}/sequential.keras")
 
         with open('./tokenizers/tokenizer.gz', 'wb') as hadle:
             joblib.dump(tokenizer, hadle)
@@ -90,7 +111,7 @@ class TextCompletionModel():
         for _ in range(next_words):
 
             token_list = tokenizer.texts_to_sequences([seed_text])[0]
-            token_list = tf.keras.preprocessing.sequence.pad_sequences([token_list], maxlen=13, padding='pre')
+            token_list = tf.keras.preprocessing.sequence.pad_sequences([token_list], maxlen=12, padding='pre')
             predicted_probabilities = model.predict(token_list)[0]
         
             # Escolher a próxima palavra com base na probabilidade

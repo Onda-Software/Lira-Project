@@ -24,7 +24,7 @@ class TextCompletionModel():
         
         if debug == True:
             tf.debugging.experimental.enable_dump_debug_info(
-                dump_root='../logs/dumps',
+                dump_root='./logs/dumps',
                 tensor_debug_mode='FULL_HEALTH',
                 circular_buffer_size=-1
             )
@@ -89,7 +89,7 @@ class TextCompletionModel():
 
         if log == True:
 
-            log_dir = "../logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+            log_dir = "./logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
             tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)   
             
             model.fit(x=x, y=y, validation_data=[x, y], epochs=1000, callbacks=[tensorboard_callback])

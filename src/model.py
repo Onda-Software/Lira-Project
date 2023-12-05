@@ -47,13 +47,10 @@ class TextCompletionModel():
                 if(x_anagram_sequences!=[] and y_anagram_sequences!=[] and z_anagram_sequences!= []):   
                 
                     input_sequences.append(x_anagram_sequences)
-                    total_sequences+=1
-
                     input_sequences.append(y_anagram_sequences)
-                    total_sequences+=1
-
                     input_sequences.append(z_anagram_sequences)
-                    total_sequences+=1
+
+                    total_sequences+=3
 
             input_sequences.append([text])
             print(text)
@@ -104,24 +101,27 @@ class TextCompletionModel():
             joblib.dump(tokenizer, hadle)
         
 
-    def predict_text(self, seed_text, next_words, model):
-             
+    def predict_text(self, seed_text, predict_length, model):
+    
         tokenizer = joblib.load('./tokenizers/tokenizer.gz')
 
-        for _ in range(next_words):
+        for _ in range(predict_length):
 
             token_list = tokenizer.texts_to_sequences([seed_text])[0]
             token_list = tf.keras.preprocessing.sequence.pad_sequences([token_list], maxlen=12, padding='pre')
+             
             predicted_probabilities = model.predict(token_list)[0]
-        
-            # Escolher a próxima palavra com base na probabilidade
             predicted_index = np.argmax(predicted_probabilities)
             output_word = ""
-         
+            
             for word, index in tokenizer.word_index.items():
-                if index == predicted_index:
+                 
+                if(predicted_index == index):
                     output_word = word
                     break
+                else:
+                    pass
+
             seed_text += " " + output_word
-        
+            
         return seed_text

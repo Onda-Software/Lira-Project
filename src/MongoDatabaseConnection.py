@@ -1,6 +1,6 @@
 import pymongo
 
-class MongoDatabase:
+class MongoDatabaseConnection:
     
     def __init__(self, db_name: str, collection_name: str) -> None:
         self.db_name = db_name

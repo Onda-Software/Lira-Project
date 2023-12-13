@@ -12,7 +12,8 @@ class TextCompletionModel():
     
         self.dataset = dataset
 
-    def load_model(self, path):
+    @staticmethod
+    def load_model(path):
     
         return tf.keras.models.load_model(path)
         
@@ -100,8 +101,9 @@ class TextCompletionModel():
         with open('./tokenizers/tokenizer.gz', 'wb') as hadle:
             joblib.dump(tokenizer, hadle)
         
-
-    def predict_text(self, seed_text, predict_length, model):
+    
+    @staticmethod
+    def predict_text(seed_text, predict_length, model):
     
         tokenizer = joblib.load('./tokenizers/tokenizer.gz')
 

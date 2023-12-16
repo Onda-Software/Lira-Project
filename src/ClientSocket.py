@@ -30,8 +30,11 @@ def sendMessage():
         text_predict = str(input("Please enter a pre text for predict: "))
         
         if(text_predict == "exit"):
+            client.send("exit".encode())
+            time.sleep(0.5)
+            client.send(f'{0}'.encode())
             client.close()
-            break
+            os._exit(0)
         else:
             client.send(f'{text_predict}'.encode())
         

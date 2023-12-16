@@ -56,26 +56,35 @@ def handleMessages(client, username):
     
     while True:
         try:
-
+            
+            print('Waiting for a message...')
             seed_text = client.recv(1024).decode()
             size_predict = client.recv(1024).decode()
             
-            print(f'\n{usernames[usernames.index(username)]}: seed text ({seed_text}), size of predict ({size_predict})')
-
-            predict = TextCompletionModel.predict_text(seed_text, int(size_predict), model)
-
-            client.send(f'{predict}'.encode())
+            if(seed_text.__eq__('exit') != True and seed_text.__eq__('') != True):
+            
+                print(f'\n{username}: seed text ({seed_text}), size of predict ({size_predict})')                
+                predict = TextCompletionModel.predict_text(seed_text, int(size_predict), model)
+                print()
+                client.send(f'{predict}'.encode())
+            else:
+                client.close()
+                usernames.remove(username)
+                
+                print(f'\nUser {username} left the server...\n')
+                
+                break
 
         except Exception as e:
+
             print(e)
-            clientLeaved = clients.index(client)
+            
             client.close()
+            usernames.remove(username)
 
-            clients.remove(clients[clientLeaved])
-            clientsLeavedUsername = usernames[clientLeaved]
-
-            print(f'\nUser {clientsLeavedUsername} left the server...\n')
-            usernames.remove(clientsLeavedUsername)
+            print(f'\nUser {username} left the server...\n')
+            
+            break
 
 def initialConnection():
 

@@ -3,7 +3,7 @@ from MongoDatabaseConnection import MongoDatabaseConnection
 from TextCompletionModel import TextCompletionModel
 
 LOCALHOST = "0.0.0.0"
-PORT = 3001
+PORT = 3000
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((LOCALHOST, PORT))

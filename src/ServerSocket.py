@@ -41,7 +41,7 @@ elif(arg[0] == "unix"):
         client.connect()
 
         json_datas = json.load(open('./database/data/data.json'))
-        #client.insert(json_datas)
+        client.insert(json_datas)
         
         dataset = client.get_datas()
         textCompletionModel = TextCompletionModel(dataset)

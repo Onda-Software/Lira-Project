@@ -2,8 +2,8 @@ import socket, threading, os, sys, json
 from MongoDatabaseConnection import MongoDatabaseConnection
 from TextCompletionModel import TextCompletionModel
 
-LOCALHOST = "0.0.0.0"
-PORT = 3000
+LOCALHOST = "127.0.0.1"
+PORT = 7123
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((LOCALHOST, PORT))

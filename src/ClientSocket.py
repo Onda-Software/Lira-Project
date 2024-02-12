@@ -4,17 +4,16 @@ from kivymd.uix.button.button import MDLabel
 from kivymd.uix.screen import Screen
 from kivymd.uix.button import MDRectangleFlatButton
 
-SERVER_IP = "0.0.0.0"
-PORT = 3000
+SERVER_IP = "127.0.0.1"
+PORT = 7123
 
-#os.system('clear')
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 class OutlinedLabel(MDLabel):
     pass
 
 class MainApp(MDApp):
-
+    
     def build(self):
         
         screen = Screen()
@@ -43,9 +42,9 @@ class MainApp(MDApp):
         except Exception as exception:
             print(f'ERROR: Please review your input: {SERVER_IP}:{PORT}')
             print(exception)
-
-    def sendMessage(self, none=None):
     
+    def sendMessage(self, none=None):
+     
         seed_text = self.input.text
         
         if(seed_text == "exit"):
@@ -61,7 +60,6 @@ class MainApp(MDApp):
             time.sleep(0.5)
             client.send(f'{size_predict}'.encode())
 
-        time.sleep(1)
         self.label.text = client.recv(1024).decode()
 
 def startThreads():

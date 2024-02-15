@@ -9,16 +9,8 @@ A Luna é uma ideia de uma assistente virtual/inteligencia artificial feita para
 
 ## Linguagens
 
-- Python v.3.11.7
+- Python v.3.11.8
 
 ## Ambientes
 
 - Lunar Vim
-
-## Bibliotecas / Importações
-
-- tensorflow v.2.15.0
-- numpy v.1.24.2
-- pymongo v.4.6.1
-- joblib v.1.3.2
-- kivy v2.2.1

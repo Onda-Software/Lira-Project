@@ -1,0 +1,89 @@
+#:kivy 2.3.0
+#:import hex kivy.utils.get_color_from_hex
+
+<Gerenciador>:
+    TelaInicio:
+        name: 'telainicio'
+        
+    TelaChat:
+        name: 'telachat'
+
+    TelaInfo:
+        name: 'telainfo'
+
+<TelaInicio>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Olá mundo' 
+            font_size: '40'
+            font_style: 'arial.ttf'
+        Button:
+            id: 'botaochat'
+            text: 'Pressione para conversar com o chat'
+            font_size: '25'
+            font_style: 'helvetica.ttf'
+            on_release: app.root.current = 'telachat'
+        Button:
+            id: 'botaoinfo'
+            text: 'Sobre nós'
+            font_size: '25'
+            on_release: app.root.current = 'telainfo'
+
+<TelaChat>:
+    
+    BoxLayout:
+
+        orientation:'vertical'
+        spacing: 30
+
+        ActionBar:
+            ActionView:
+                ActionPrevious:
+                    title: 'Assistente Luna'
+                    on_release:app.root.current = 'telainicio'
+         
+        ScrollView:
+            BoxLayout:
+                id: caixa_texto
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+        
+        BoxLayout:
+            
+            size_hint_y: None
+            height: 60
+            padding: 10
+            spacing: 20
+
+            TextInput:
+                id: texto
+                hint_text: 'Digite sua mensagem aqui...'
+                multiline: False
+                size_hint_x: 0.9
+            
+            Button:
+                text: 'Enviar'
+                size_hint_x: 0.2
+                width: 50
+                on_release: app.root.get_screen('telachat').sendMessage()
+
+<CaixaComentario>:
+
+    size_hint_y: None
+    height: 600
+    pos_hint:{'center_x': 0.5, 'center_y': 0.8}
+    size_hint_x: 0.8
+
+    canvas.before:
+        Color:
+            rgba: hex('#A7A5A5')
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [7]
+    Label:
+        id: resposta_dinamica
+        font_size: '20'
+        color: (0, 0, 0, 1)

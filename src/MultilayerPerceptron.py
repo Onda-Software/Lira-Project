@@ -4,7 +4,7 @@ import keras
 import numpy as np
 import tensorflow as tf
 
-class TextCompletionModel():
+class MultilayerPerceptron():
 
     def __init__(self, dataset) -> None:    
         self.dataset = dataset
@@ -13,7 +13,7 @@ class TextCompletionModel():
     def load_model(path):
         return keras.models.load_model(path)
 
-    def build_model(self, system="unix" ,debug=False, log=False):
+    def build_model(self, system='Linux' ,debug=False, log=False):
         
         print("Version: ", tf.__version__)
         print("Eager mode: ", tf.executing_eagerly())
@@ -28,35 +28,32 @@ class TextCompletionModel():
         
         tokenizer = keras.preprocessing.text.Tokenizer()
         input_sequences = []
-        total_words = 0x00
-        total_sequences = 0x00
-
-        for data in self.dataset:
-            text = data['text']
-            tokenizer.fit_on_texts([text])
-            
-            for index in range(1, len(text.split())):
-			    
-                x_anagram_sequences = text.split()[:index]
-                y_anagram_sequences = text.split()[index:]
-                z_anagram_sequences = text.split()[index-1:index+1]
-			    
-                if(x_anagram_sequences!=[] and y_anagram_sequences!=[] and z_anagram_sequences!= []):   
-                     
-                    input_sequences.append(x_anagram_sequences)
-                    input_sequences.append(y_anagram_sequences)
-                    input_sequences.append(z_anagram_sequences)
-
-                    total_sequences+=3
-            
-            input_sequences.append([text])
-            print(text)
-            for element in range(1, len(input_sequences)-1):
-                
-                if(input_sequences[element]==input_sequences[element-1]):
-                    del input_sequences[element-1]
-                    total_sequences-=1
+        total_words, total_sequences = 0x00, 0x00
         
+        for data in self.dataset:
+            text = data.text
+            tokenizer.fit_on_texts([text])
+            text_divisions = []
+            filtered_elements = []
+             
+            for index in range(0, len(text.split())):
+			    
+                text_divisions += [
+                    text.split()[:],
+                    [text.split()[index]],
+                    text.split()[:index],
+                    text.split()[index:],
+                    text.split()[index-1:index+1],
+                ]
+            
+            for text in text_divisions:
+                if(not text in filtered_elements and text != []):
+                    filtered_elements.append(text)
+            
+            input_sequences = filtered_elements
+            total_sequences+=5
+            print(input_sequences)
+
         max_sequence_length = max([len(seq) for seq in input_sequences])
         
         sequences = tokenizer.texts_to_sequences(input_sequences)
@@ -105,7 +102,7 @@ class TextCompletionModel():
         for _ in range(predict_length):
 
             token_list = tokenizer.texts_to_sequences([seed_text])[0]
-            token_list = keras.preprocessing.sequence.pad_sequences([token_list], maxlen=12, padding='pre')
+            token_list = keras.preprocessing.sequence.pad_sequences([token_list], maxlen=8, padding='pre')
              
             predicted_probabilities = model.predict(token_list)[0]
             predicted_index = np.argmax(predicted_probabilities)

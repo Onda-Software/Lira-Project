@@ -1,9 +1,9 @@
-import socket, threading, os, json, platform
-from MongoDatabaseConnection import MongoDatabaseConnection
-from TextCompletionModel import TextCompletionModel
+from beanie_batteries_queue.queue import asyncio
+from MultilayerPerceptron import MultilayerPerceptron
+import DatabaseModel, socket, threading, os, json, platform
 
 HOST = "127.0.0.1"
-PORT = 7123
+PORT = 7221
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
@@ -11,9 +11,9 @@ server.listen()
 
 os_type = platform.system()
 
-if (os_type == 'Windows'):
+if os_type == 'Windows':
     os.system('clear-host')
-elif (os_type == 'Linux'):
+elif os_type == 'Linux':
     os.system('clear')
 
 print(f"\nServer started...")
@@ -23,68 +23,56 @@ print("\nWaiting for client request...")
 clients, usernames = [], []
 database, model = 0x00, 0x00
 
-if (os_type == "Windows"):
-
-    if (os.path.exists('./models/windows/sequential.keras') == False):
-        
-        database = MongoDatabaseConnection('test_database', 'test_collection')
-        database.connect()
+async def ModelRender():
+    
+    if (os.path.exists(f'./models/{os_type}/sequential.keras') == False):
+         
+        database = DatabaseModel
+        await database.init()
         
         json_datas = json.load(open('./database/data/data.json'))
-        database.insert(json_datas)
-        
-        dataset = database.get_datas()
-        textCompletionModel = TextCompletionModel(dataset)
-        textCompletionModel.build_model(system="windows", debug = False, log = False)
-    
-    model = TextCompletionModel.load_model('./models/windows/sequential.keras')
-    
-elif (os_type == "Linux"):
-    
-    if (os.path.exists('./models/unix/sequential.keras') == False):
-        
-        database = MongoDatabaseConnection('test_database', 'test_collection')
-        database.connect()
 
-        json_datas = json.load(open('./database/data/data.json'))
-        database.insert(json_datas)
+        for data in json_datas:
+            await database.InsertData(data['id'], data['text'])
         
-        dataset = database.get_datas()
-        textCompletionModel = TextCompletionModel(dataset)
-        textCompletionModel.build_model(system = "unix", debug = False, log = True)
-    
-    model = TextCompletionModel.load_model('./models/unix/sequential.keras')
+        dataset = await database.GetData()
+        textCompletionModel = MultilayerPerceptron(dataset)
+        textCompletionModel.build_model(system=os_type, debug = False, log = False)
+      
+    return MultilayerPerceptron.load_model(f'./models/{os_type}/sequential.keras')
+
+model = asyncio.run(ModelRender())
 
 def handleMessages(client, username):
     
     while True:
+
         try:
             
             print('Waiting for a message...')
             seed_text = client.recv(1024).decode()
-            size_predict = client.recv(1024).decode()
-            
+            size_predict = int(client.recv(1024).decode())
+
             if (seed_text.__eq__('exit') != True and seed_text.__eq__('') != True):
                 
                 print(f'\n{username}: seed text ({seed_text}), size of predict ({size_predict})')                
-                predict = TextCompletionModel.predict_text(seed_text, int(size_predict), model)
-                print()
+                predict = MultilayerPerceptron.predict_text(seed_text, int(size_predict), model)
                 client.send(f'{predict}'.encode())
-                
+             
             else:
                 client.close()
                 usernames.remove(username)
 
-                print(f'\nUser {username} left the server...\n')
+                print(f'\n\nUser {username} left the server...\n')
                 break
-            
+        
         except Exception as exception:
 
             client.close()
             usernames.remove(username)
             
             print(exception)
-            print(f'\nUser {username} left the server...\n')
+            print(f'\n\nUser {username} left the server...\n')
             break
    
 def initialConnection():

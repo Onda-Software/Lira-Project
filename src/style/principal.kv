@@ -1,0 +1,63 @@
+#:kivy 2.3.0
+
+<Gerenciador>:
+    TelaInicio:
+        name: 'telainicio'
+        
+    TelaChat:
+        name: 'telachat'
+
+    TelaInfo:
+        name: 'telainfo'
+
+<TelaInicio>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Olá mundo' 
+            font_size: '40'
+            font_style: 'arial.ttf'
+        Button:
+            id: 'botaochat'
+            text: 'Pressione para conversar com o chat'
+            font_size: '25'
+            font_style: 'helvetica.ttf'
+            on_release: app.root.current = 'telachat'
+        Button:
+            id: 'botaoinfo'
+            text: 'Sobre nós'
+            font_size: '25'
+            on_release: app.root.current = 'telainfo'
+
+<TelaChat>:
+    BoxLayout:
+        orientation:'vertical'
+        ActionBar:
+            ActionView:
+                ActionPrevious:
+                    title: 'Assistente Luna'
+                    on_release:app.root.current = 'telainicio'
+        ScrollView:
+            BoxLayout:
+                id: caixa_texto
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            TextInput:
+                id: texto
+                hint_text: 'Digite sua mensagem aqui...'
+                multiline: False
+            Button:
+                text: 'Enviar'
+                size_hint_x: None
+                width: 50
+                on_release: app.root.get_screen('telachat').sendMessage(texto.text)
+
+<CaixaComentario>:
+    size_hint_y: None
+    height: 100 
+    Label:
+        id: resposta_dinamica

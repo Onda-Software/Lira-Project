@@ -1,5 +1,5 @@
 [
-    {"id": 1, "text": "text for a example"},
-    {"id": 2, "text": "simple text prediction"}
-    {"id": 3, "text": "please write a basic html model"}
+    {"key": 1, "text": "text for a example"},
+    {"key": 2, "text": "simple text prediction"},
+    {"key": 3, "text": "please write a basic html model"}
 ]

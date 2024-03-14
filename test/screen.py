@@ -41,8 +41,8 @@ class MainApp(MDApp):
 
         return screen
 
-    def print_text(self, none):
-        print(self.input.text)
-        self.label.text = self.input.text
+    #def print_text(self, none):
+        #print(self.input.text)
+        #self.label.text = self.input.text
 
 MainApp().run()

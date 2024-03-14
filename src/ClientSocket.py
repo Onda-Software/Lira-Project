@@ -1,13 +1,13 @@
+import pyautogui, socket, threading
 from time import sleep
 from kivy.utils import platform
-import socket, threading
 from kivymd.theming import Window
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 SERVER_IP = "127.0.0.1"
-PORT = 7221
+PORT = 7222
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -49,7 +49,12 @@ class Principal(App):
         if(platform == 'android' or platform == 'ios'):
             Window.maximize()
         else:
+            
+            screen_width, screen_height = pyautogui.size()
+
             Window.size = (600, 800)
+            Window.left = int((screen_width - Window.width) / 2)
+            Window.top = int((screen_height - Window.height) / 2)
         
         self.connect()
         return Gerenciador()

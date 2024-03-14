@@ -1,6 +1,7 @@
-import datetime
-import joblib
-import keras
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
+import datetime, joblib, keras
 import numpy as np
 import tensorflow as tf
 
@@ -13,7 +14,7 @@ class MultilayerPerceptron():
     def load_model(path):
         return keras.models.load_model(path)
 
-    def build_model(self, system='Linux' ,debug=False, log=False):
+    def build_model(self, system="unix" ,debug=False, log=False):
         
         print("Version: ", tf.__version__)
         print("Eager mode: ", tf.executing_eagerly())
@@ -28,31 +29,48 @@ class MultilayerPerceptron():
         
         tokenizer = keras.preprocessing.text.Tokenizer()
         input_sequences = []
-        total_words, total_sequences = 0x00, 0x00
+        total_words = 0x00
+        total_sequences = 0x00
         
+        print("\nLoading data...")
+
         for data in self.dataset:
             text = data.text
             tokenizer.fit_on_texts([text])
-            text_divisions = []
-            filtered_elements = []
-             
-            for index in range(0, len(text.split())):
+            
+            for index in range(1, len(text.split())):
 			    
-                text_divisions += [
-                    text.split()[:],
-                    [text.split()[index]],
-                    text.split()[:index],
-                    text.split()[index:],
-                    text.split()[index-1:index+1],
-                ]
+                a_anagram_sequences = text.split()[:]
+                b_anagram_sequences = [text.split()[index]]
+                c_anagram_sequences = text.split()[:index]
+                d_anagram_sequences = text.split()[index:]
+                e_anagram_sequences = text.split()[index-1:index+1]
+			    
+                if(
+                    a_anagram_sequences!=[] and 
+                    b_anagram_sequences!=[] and 
+                    c_anagram_sequences!=[] and
+                    d_anagram_sequences!=[] and
+                    e_anagram_sequences!=[]
+                ): 
+                     
+                    input_sequences.append(a_anagram_sequences)
+                    input_sequences.append(b_anagram_sequences)
+                    input_sequences.append(c_anagram_sequences)
+                    input_sequences.append(d_anagram_sequences)
+                    input_sequences.append(e_anagram_sequences)
+
+                    total_sequences+=5
             
-            for text in text_divisions:
-                if(not text in filtered_elements and text != []):
-                    filtered_elements.append(text)
-            
-            input_sequences = filtered_elements
-            total_sequences+=5
-            print(input_sequences)
+            input_sequences.append([text])
+
+            for element in range(1, len(input_sequences)-1):
+                
+                if(input_sequences[element]==input_sequences[element-1]):
+                    del input_sequences[element-1]
+                    total_sequences-=1
+         
+        print("Uploaded data...")
 
         max_sequence_length = max([len(seq) for seq in input_sequences])
         
@@ -64,12 +82,12 @@ class MultilayerPerceptron():
         x, y = sequences[:, :-1], sequences[:, -1]
         y = keras.utils.to_categorical(y, num_classes=total_words)
         
-        print("============================================")
+        print("\n============================================")
         print(f"Total unique sequences: ({total_sequences+1})")
         print(f"Total unique words: ({total_words})")
         print(f"Dimensions of x: ({x.shape})")
         print(f"Dimensions of y: ({y.shape})")
-        print("============================================")
+        print("============================================\n")
         
         model = keras.models.Sequential()
         model.add(keras.layers.Embedding(total_words, 100, input_length=max_sequence_length - 1))
@@ -83,10 +101,10 @@ class MultilayerPerceptron():
             log_dir = "./logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
             tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)   
             
-            model.fit(x=x, y=y, validation_data=[x, y], epochs=1000, callbacks=[tensorboard_callback])
+            model.fit(x=x, y=y, validation_data=[x, y], epochs=10, callbacks=[tensorboard_callback])
         
         else:
-            model.fit(x=x, y=y, validation_data=[x, y], epochs=1000)
+            model.fit(x=x, y=y, validation_data=[x, y], epochs=10)
         
         model.summary()
         model.save(f"./models/{system}/sequential.keras")
@@ -102,7 +120,7 @@ class MultilayerPerceptron():
         for _ in range(predict_length):
 
             token_list = tokenizer.texts_to_sequences([seed_text])[0]
-            token_list = keras.preprocessing.sequence.pad_sequences([token_list], maxlen=8, padding='pre')
+            token_list = keras.preprocessing.sequence.pad_sequences([token_list], maxlen=13, padding='pre')
              
             predicted_probabilities = model.predict(token_list)[0]
             predicted_index = np.argmax(predicted_probabilities)

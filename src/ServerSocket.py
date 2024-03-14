@@ -3,7 +3,7 @@ from MultilayerPerceptron import MultilayerPerceptron
 import DatabaseModel, socket, threading, os, json, platform
 
 HOST = "127.0.0.1"
-PORT = 7221
+PORT = 7222
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
@@ -11,14 +11,11 @@ server.listen()
 
 os_type = platform.system()
 
-if os_type == 'Windows':
-    os.system('clear-host')
-elif os_type == 'Linux':
-    os.system('clear')
+if   os_type == 'Windows': os.system('clear-host')
+elif os_type == 'Linux'  : os.system('clear')
 
 print(f"\nServer started...")
 print(f"{os_type} - {HOST}:{PORT}")
-print("\nWaiting for client request...")
 
 clients, usernames = [], []
 database, model = 0x00, 0x00
@@ -30,18 +27,25 @@ async def ModelRender():
         database = DatabaseModel
         await database.init()
         
-        json_datas = json.load(open('./database/data/data.json'))
+        print('\nInserting dataset on database...')
 
-        for data in json_datas:
-            await database.InsertData(data['id'], data['text'])
+        for data_file in os.listdir('./database/data/'):
+            
+            json_datas = json.load(open(f'./database/data/{data_file}'))
+             
+            #for data in json_datas:    
+            #    await database.InsertData(data['id'], data['text'])
+        
+        print('Insertion was been completed...\n')
         
         dataset = await database.GetData()
-        textCompletionModel = MultilayerPerceptron(dataset)
-        textCompletionModel.build_model(system=os_type, debug = False, log = False)
+        multilayerPerceptron = MultilayerPerceptron(dataset)
+        multilayerPerceptron.build_model(system = os_type, debug = False, log = False)
       
     return MultilayerPerceptron.load_model(f'./models/{os_type}/sequential.keras')
 
 model = asyncio.run(ModelRender())
+print("\nWaiting for client request...")
 
 def handleMessages(client, username):
     
@@ -49,7 +53,6 @@ def handleMessages(client, username):
 
         try:
             
-            print('Waiting for a message...')
             seed_text = client.recv(1024).decode()
             size_predict = int(client.recv(1024).decode())
 

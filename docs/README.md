@@ -2,6 +2,8 @@
 ## Requisitos
 - Python (versão 3.11 a diante)
 - MongoDB
+- Git (opicional)
+- Bibliotecas listadas no arquivo [requeriments.txt](https://github.com/Onda-Software/Projeto-Luna/blob/main/requirements.txt)
 
 # Windows
 Faça o download do projeto em: https://github.com/Onda-Software/Projeto-Luna/archive/refs/heads/main.zip
@@ -18,7 +20,11 @@ Baixe os requisitos com o pip:
 <br>
 ``` pip install -r requerements.txt ```
 
-Depois basta rodar o arquivo principal:
+Depois basta rodar o Servidor:
+<br>
+``` python src/ServerSocket.py ```
+
+E em outro terminal rodar o arquivo principal:
 <br>
 ``` python main.py ```
 
@@ -37,6 +43,10 @@ Baixe os requisitos com o pip:
 <br>
 ``` pip install -r requerements.txt ```
 
-Depois basta rodar o arquivo principal:
+Depois basta rodar o Servidor:
+<br>
+``` python src/ServerSocket.py ```
+
+E em outro terminal rodar o arquivo principal:
 <br>
 ``` python main.py ```

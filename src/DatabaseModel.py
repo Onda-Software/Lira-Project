@@ -39,7 +39,7 @@ async def init():
     )
     
     await init_beanie(
-        database = client.lunadb,
+        database = client.test,
         document_models = [
             DataDocument,
         ],
@@ -54,7 +54,7 @@ async def InsertData(key, text):
 
     await DataDocument.insert_one(data)
  
-async def GetData():
+async def findAll():
     
     datas = []
 
@@ -63,7 +63,10 @@ async def GetData():
         datas.append(data)
     
     return datas
- 
+
+async def findOne(field, index):
+    return await DataDocument.find({field: index}).to_list()
+    
 class runner(Task):
 
     async def init_call(self, task):

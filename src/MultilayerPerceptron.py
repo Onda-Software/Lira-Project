@@ -1,9 +1,11 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-import datetime, joblib, keras
+import datetime, joblib, keras, gc
 import numpy as np
 import tensorflow as tf
+
+gc.enable()
 
 class MultilayerPerceptron():
 
@@ -76,7 +78,9 @@ class MultilayerPerceptron():
         
         sequences = tokenizer.texts_to_sequences(input_sequences)
         sequences = np.array(keras.preprocessing.sequence.pad_sequences(sequences, maxlen=max_sequence_length, padding='pre'))
-
+        
+        
+        del input_sequences[:]
         total_words = (len(tokenizer.word_index) + 1)
 
         x, y = sequences[:, :-1], sequences[:, -1]

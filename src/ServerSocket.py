@@ -1,6 +1,9 @@
 from beanie_batteries_queue.queue import asyncio
 from MultilayerPerceptron import MultilayerPerceptron
-import DatabaseModel, socket, threading, os, json, platform
+import DatabaseModel
+import socket, threading, os, json, platform, gc
+
+gc.enable()
 
 HOST = "127.0.0.1"
 PORT = 7222
@@ -27,18 +30,22 @@ async def ModelRender():
         database = DatabaseModel
         await database.init()
         
-        print('\nInserting dataset on database...')
-
+        print('\nChecking database...')
+        
         for data_file in os.listdir('./database/data/'):
             
             json_datas = json.load(open(f'./database/data/{data_file}'))
              
-            #for data in json_datas:    
-            #    await database.InsertData(data['id'], data['text'])
+            for data in json_datas:    
+                
+                if (data['text'] in f"{await database.findOne('text', data['text'])}"):
+                    pass
+                else:
+                    await database.InsertData(data['id'], data['text'])
         
         print('Insertion was been completed...\n')
         
-        dataset = await database.GetData()
+        dataset = await database.findAll()
         multilayerPerceptron = MultilayerPerceptron(dataset)
         multilayerPerceptron.build_model(system = os_type, debug = False, log = False)
       

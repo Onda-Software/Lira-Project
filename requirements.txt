@@ -1,10 +1,12 @@
 beanie==1.25.0
+beanie_batteries_queue=0.4.0
 joblib==1.3.2
 keras==2.15.0
 kivy==2.3.0
 kivymd==1.2.0
 motor==3.3.2
 numpy==1.24.2
+pyautogui=0.9.54
 pydantic==1.10.14
 pymongo==4.6.1
 tensorflow==2.15.0

@@ -124,7 +124,7 @@ class MultilayerPerceptron():
         for _ in range(predict_length):
 
             token_list = tokenizer.texts_to_sequences([seed_text])[0]
-            token_list = keras.preprocessing.sequence.pad_sequences([token_list], maxlen=13, padding='pre')
+            token_list = keras.preprocessing.sequence.pad_sequences([token_list], maxlen=12, padding='pre')
              
             predicted_probabilities = model.predict(token_list)[0]
             predicted_index = np.argmax(predicted_probabilities)

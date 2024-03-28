@@ -1,4 +1,6 @@
-FROM python:3.11-alpine
+FROM python:3.11.8
+
+ENV TERM xterm
 
 WORKDIR /home/viper/Desktop/LUNA/
 
@@ -7,4 +9,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD [ "python", "./src/ServerSocket.py" ]
+CMD [ "python", "src/ServerSocket.py" ]

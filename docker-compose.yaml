@@ -1,5 +1,4 @@
-# Use root/example as user/password credentials
-version: '0.1'
+version: '3'
 
 services:
   
@@ -9,7 +8,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-
+  
   mongo-express:
     image: mongo-express
     restart: always
@@ -19,3 +18,21 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+  
+  server:
+    image: luna-container
+    restart: always
+    ports:
+      - 7220:7220
+    deploy:
+      resources:
+        limits:
+          cpus: '.85'
+          memory: 7200M
+        reservations:
+          cpus: '.05'
+          memory: 800M
+  
+networks:
+  default:
+    driver: overlay

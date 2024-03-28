@@ -5,7 +5,7 @@ import socket, threading, os, json, platform, gc
 
 gc.enable()
 
-HOST = "127.0.0.1"
+HOST = "0.0.0.0"
 PORT = 7222
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -14,8 +14,8 @@ server.listen()
 
 os_type = platform.system()
 
-if   os_type == 'Windows': os.system('clear-host')
-elif os_type == 'Linux'  : os.system('clear')
+#if   os_type == 'Windows': os.system('clear-host')
+#elif os_type == 'Linux'  : os.system('clear')
 
 print(f"\nServer started...")
 print(f"{os_type} - {HOST}:{PORT}")

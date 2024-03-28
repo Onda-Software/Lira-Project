@@ -6,7 +6,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 
-SERVER_IP = "127.0.0.1"
+SERVER_IP = "0.0.0.0"
 PORT = 7222
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

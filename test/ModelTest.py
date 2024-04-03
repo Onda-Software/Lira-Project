@@ -1,8 +1,9 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-import numpy as np
-import keras
 from multiprocessing import Process, Pipe
+import gc, joblib ,keras, tensorflow as tf, numpy as np
+
+gc.enable()
 
 tokenizer = keras.preprocessing.text.Tokenizer()
 datas = [{"id": 1, "text": "Teste de anagrama neural"}]
@@ -42,10 +43,6 @@ for data in datas:
     input_sequences = parent_conn.recv()
     if (process.join()): pass
 
-for id in range(1, len(input_sequences)):
-    print(f'\n{input_sequences[id]}')
-print()
-
 max_sequence_length = max([len(seq) for seq in input_sequences])
 sequences = tokenizer.texts_to_sequences(input_sequences)
 sequences = np.array(keras.preprocessing.sequence.pad_sequences(sequences, maxlen=max_sequence_length, padding='pre'))
@@ -56,40 +53,47 @@ x, y = sequences[:, :-1], sequences[:, -1]
 y = keras.utils.to_categorical(y, num_classes=total_words)
 
 model = keras.models.Sequential()
+
 model.add(keras.layers.Embedding(total_words, 100, input_length=max_sequence_length - 1))
 model.add(keras.layers.LSTM(100))
 model.add(keras.layers.Dense(total_words, activation='softmax'))
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-model.fit(x, y, epochs=1000)
 
-model.summary()
+for _ in range (0, 10):
+    model.train_on_batch(x=x, y=y)
+    model.fit(x=x, y=y, epochs=10)
 
-def predict_text(seed_text, next_words, model):
+print(tf.shape(x)[0])
+print(tf.shape(y)[0])
+print(x.shape)
+print(y.shape)
+print(model.summary())
 
-    for _ in range(next_words):
+with open('./tokenizers/tokenizer.gz', 'wb') as hadle:
+    joblib.dump(tokenizer, hadle)
+
+def predict_text(seed_text, predict_length, model):
+        
+    tokenizer = joblib.load('./tokenizers/tokenizer.gz')
+
+    for _ in range(predict_length):
 
         token_list = tokenizer.texts_to_sequences([seed_text])[0]
-        token_list = keras.preprocessing.sequence.pad_sequences([token_list], maxlen=(max_sequence_length-1), padding='pre')
+        token_list = keras.preprocessing.sequence.pad_sequences([token_list], maxlen=3, padding='pre')
+             
         predicted_probabilities = model.predict(token_list)[0]
-        
-        # Escolher a próxima palavra com base na probabilidade
         predicted_index = np.argmax(predicted_probabilities)
         output_word = ""
-         
+            
         for word, index in tokenizer.word_index.items():
-            if index == predicted_index:
+             
+            if(predicted_index == index):
                 output_word = word
                 break
+            
         seed_text += " " + output_word
         
     return seed_text
 
-print("=================================================================")
-#print(f"Total unique sequences: ({total_sequences+1})")
-print(f"Total unique words: ({total_words})")
-print(f"Dimensions of x: ({x.shape})")
-print(f"Dimensions of y: ({y.shape})")
-print("=================================================================")
-
-print(predict_text("Teste", 3, model))
+print(predict_text('Teste', 3, model))

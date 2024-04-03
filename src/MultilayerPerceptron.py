@@ -99,16 +99,23 @@ class MultilayerPerceptron():
         model.add(keras.layers.Dense(total_words, activation='softmax'))
 
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-
+        
+        model_checkpoint_callback = keras.callbacks.ModelCheckpoint(
+            filepath='./ckpt/checkpoint.model.keras',
+            monitor='val_accuracy',
+            mode='auto',
+            save_freq='epoch'
+        )
+        
         if log == True:
 
             log_dir = "./logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
             tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)   
             
-            model.fit(x=x, y=y, validation_data=[x, y], epochs=10, callbacks=[tensorboard_callback])
+            model.fit(x=x, y=y, validation_data=[x, y], epochs=1, callbacks=[tensorboard_callback])
         
         else:
-            model.fit(x=x, y=y, validation_data=[x, y], epochs=10)
+            model.fit(x=x, y=y, validation_split=1, epochs=1, callbacks=[model_checkpoint_callback])
         
         model.summary()
         model.save(f"./models/{system}/sequential.keras")

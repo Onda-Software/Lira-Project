@@ -30,21 +30,21 @@ class DataDocument(Document):
                 ("text", pymongo.TEXT),
             ],
         ]
-
+    
 async def init():
 
     global client 
     client = AsyncIOMotorClient(
-        "mongodb://localhost:27017"
+        "mongodb://root:example@localhost:27017/"
     )
     
     await init_beanie(
-        database = client.test,
+        database = client.lunadb,
         document_models = [
             DataDocument,
         ],
     )
-    
+
 async def InsertData(key, text):
      
     if(key == '' or text == ''):

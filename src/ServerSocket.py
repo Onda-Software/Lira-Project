@@ -6,7 +6,7 @@ import socket, threading, os, json, platform, gc
 gc.enable()
 
 HOST = "0.0.0.0"
-PORT = 7222
+PORT = 7221
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
@@ -42,8 +42,8 @@ async def ModelRender():
                     pass
                 else:
                     await database.InsertData(data['id'], data['text'])
-        
-        print('Insertion was been completed...\n')
+         
+        print('Check was been completed...\n')
         
         dataset = await database.findAll()
         multilayerPerceptron = MultilayerPerceptron(dataset)

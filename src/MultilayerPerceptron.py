@@ -31,14 +31,14 @@ class MultilayerPerceptron():
         
         tokenizer = keras.preprocessing.text.Tokenizer()
         input_sequences = []
-        clean_seq = []
-        total_words = 0x00
-        total_sequences = 0x00
-        iterator = 1000
+        total_sequences = 0
+        iterator = 0
         print("\nLoading data...")
 
         for data in self.dataset:
             
+            print(iterator)
+            clean_seq = []
             iterator += 1
             text = data.text
             tokenizer.fit_on_texts([text])
@@ -56,21 +56,20 @@ class MultilayerPerceptron():
                     clean_seq.append(seq)
             
             total_sequences += len(clean_seq)
-            input_sequences = clean_seq
-                
-            if(iterator % 1000 == 0 or iterator % 10000 == 0):
-
+            #input_sequences += clean_seq
+             
+            if(iterator % 97 == 0):
+                  
                 max_sequence_length = max(map(len, input_sequences))
                 
                 with open('database/max_sequence_length.txt', 'w') as writer:
-                    writer.write(f"{max_sequence_length}") 
+                    writer.write(f"{max_sequence_length-1}") 
                 
                 sequences = tokenizer.texts_to_sequences(input_sequences)
                 sequences = np.array(keras.preprocessing.sequence.pad_sequences(sequences, maxlen=max_sequence_length, padding='pre'))
                 
-                del input_sequences[:]
                 total_words = (len(tokenizer.word_index) + 1)
-
+                input_sequences = []
                 x, y = sequences[:, :-1], sequences[:, -1]
                 y = keras.utils.to_categorical(y, num_classes=total_words)
                 
@@ -102,8 +101,8 @@ class MultilayerPerceptron():
                      
                     model.fit(x=x, y=y, validation_data=[x, y], epochs=1, callbacks=[tensorboard_callback])
                 else:
-                    #model.fit(x=x, y=y, validation_split=1, epochs=1, callbacks=[model_checkpoint_callback])
-                    model.train_on_batch(x=x, y=y)
+                    model.fit(x=x, y=y, epochs=100, callbacks=[model_checkpoint_callback])
+                    #model.train_on_batch(x=x, y=y)
                 
                 model.summary()
                 model.save(f"./models/{system}/sequential.keras")

@@ -6,7 +6,7 @@ import socket, threading, os, json, platform, gc
 gc.enable()
 
 HOST = "0.0.0.0"
-PORT = 7221
+PORT = 7229
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
@@ -32,9 +32,9 @@ async def ModelRender():
         
         print('\nChecking database...')
         
-        for data_file in os.listdir('./database/data/'):
+        for data_file in os.listdir('./database/data/definitive/'):
             
-            json_datas = json.load(open(f'./database/data/{data_file}'))
+            json_datas = json.load(open(f'./database/data/definitive/{data_file}'))
              
             for data in json_datas:    
                 

@@ -7,7 +7,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 SERVER_IP = "0.0.0.0"
-PORT = 7221
+PORT = 7229
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -27,7 +27,7 @@ class TelaChat(Screen):
         
         client.send(f'{input}'.encode())
         sleep(0.5)
-        client.send(f'{int(3)}'.encode())
+        client.send(f'{int(18)}'.encode())
 
         predict = client.recv(1024).decode()
 

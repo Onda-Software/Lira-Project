@@ -18,9 +18,9 @@ class MultilayerPerceptron():
 
     def build_model(self, system="unix" ,debug=False, log=False):
         
-        print("Version: ", tf.__version__)
-        print("Eager mode: ", tf.executing_eagerly())
-        print("GPU IS", "AVAILABLE" if tf.config.list_physical_devices("GPU") else "NOT AVAILABLE")
+        print("[-] Version: ", tf.__version__)
+        print("[-] Eager mode: ", tf.executing_eagerly())
+        print("[-] GPU IS", "AVAILABLE" if tf.config.list_physical_devices("GPU") else "NOT AVAILABLE")
         
         if debug == True:
             tf.debugging.experimental.enable_dump_debug_info(
@@ -33,7 +33,7 @@ class MultilayerPerceptron():
         input_sequences = []
         total_sequences = 0
         iterator = 0
-        print("\nLoading data...")
+        print("\n[-] Loading data...")
 
         for data in self.dataset:
             
@@ -51,14 +51,13 @@ class MultilayerPerceptron():
                 input_sequences.append(text.split()[:index])
                 input_sequences.append(text.split()[index-1:index+1])
 			     
-            for seq in input_sequences:
+            for seq in clean_seq:
                 if seq not in clean_seq:
-                    clean_seq.append(seq)
+                    input_sequences.append(seq)
             
             total_sequences += len(clean_seq)
-            #input_sequences += clean_seq
              
-            if(iterator % 97 == 0):
+            if(iterator % 100 == 0):
                   
                 max_sequence_length = max(map(len, input_sequences))
                 

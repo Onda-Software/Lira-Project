@@ -1,10 +1,10 @@
 #:kivy 2.3.0
-#:import hex kivy.utils.get_color_from_hex
 
 <Gerenciador>:
+    
     TelaInicio:
         name: 'telainicio'
-        
+    
     TelaChat:
         name: 'telachat'
 
@@ -12,78 +12,128 @@
         name: 'telainfo'
 
 <TelaInicio>:
+    
     BoxLayout:
         orientation: 'vertical'
+        
         Label:
             text: 'Olá mundo' 
-            font_size: '40'
-            font_style: 'arial.ttf'
+            font_size: 40
+
         Button:
-            id: 'botaochat'
+            id: botaochat
             text: 'Pressione para conversar com o chat'
-            font_size: '25'
-            font_style: 'helvetica.ttf'
+            font_size: 25
             on_release: app.root.current = 'telachat'
+        
         Button:
-            id: 'botaoinfo'
+            id: botaoinfo
             text: 'Sobre nós'
-            font_size: '25'
+            font_size: 25
             on_release: app.root.current = 'telainfo'
 
 <TelaChat>:
-    
+
     BoxLayout:
 
         orientation:'vertical'
-        spacing: 30
 
         ActionBar:
             ActionView:
                 ActionPrevious:
                     title: 'Assistente Luna'
                     on_release:app.root.current = 'telainicio'
-         
+
         ScrollView:
             BoxLayout:
                 id: caixa_texto
                 orientation: 'vertical'
                 size_hint_y: None
                 height: self.minimum_height
-        
+
         BoxLayout:
-            
             size_hint_y: None
             height: 60
-            padding: 10
-            spacing: 20
 
             TextInput:
-                id: texto
-                hint_text: 'Digite sua mensagem aqui...'
-                multiline: False
-                size_hint_x: 0.9
-            
+                id : texto
+                font_size: 20
+                size_hint: 0.8, None
+                height: self.minimum_height
+                background_color: 0.2, 0.2, 0.2, 1
+                foreground_color: 1, 1, 1, 1
+                hint_text: "Digite algo aqui"
+                hint_text_color: 0.5, 0.5, 0.5, 1
+
             Button:
                 text: 'Enviar'
-                size_hint_x: 0.2
+                size_hint_x: None
                 width: 50
-                on_release: app.root.get_screen('telachat').sendMessage()
+                on_release: app.root.get_screen('telachat').addComent()
 
 <CaixaComentario>:
 
     size_hint_y: None
-    height: 600
-    pos_hint:{'center_x': 0.5, 'center_y': 0.8}
     size_hint_x: 0.8
+    pos_hint: {'right': 1}
 
-    canvas.before:
-        Color:
-            rgba: hex('#A7A5A5')
-        RoundedRectangle:
-            pos: self.pos
-            size: self.size
-            radius: [7]
     Label:
         id: resposta_dinamica
-        font_size: '20'
-        color: (0, 0, 0, 1)
+        
+        canvas.before:
+            Color:
+                rgba: 0.1, 0.5, 0.1, 1
+            RoundedRectangle:
+                pos: self.pos[0] - self.padding[0] + 25, self.pos[1] + self.padding[1]
+                size: self.texture_size[0] + 2 * self.padding[0], self.texture_size[1] + 2 * self.padding[1] + 15
+                radius: [10,]
+        
+        padding: 15, -3, 2, 1
+        size_hint_y: None
+        halign:'left'
+        valign:'middle'
+        text_size: self.width - 20, None
+        font_size: 20
+        size: self.texture_size
+
+<CaixaComentarioLuna>:
+    
+    size_hint_y: None
+    size_hint_x: 0.8
+    
+    Label:
+        id: resposta_dinamica
+        
+        canvas.before:
+            Color:
+                rgba: 0.1, 0.5, 0.1, 1
+            RoundedRectangle:
+                pos: self.pos[0] - self.padding[0], self.pos[1] + self.padding[1]
+                size: self.texture_size[0] + 2 * self.padding[0], self.texture_size[1] + 2 * self.padding[1] + 15
+                radius: [10,]
+        
+        padding: 5, -3
+        size_hint_y: None
+        halign:'left'
+        valign: 'middle'
+        text_size: self.width - 20, None
+        size: self.texture_size
+        font_size: 20
+
+<TelaInfo>:
+
+    BoxLayout:
+        orientation:'vertical'
+        ActionBar:
+            pos_hint: {'top': 1}
+            ActionView:
+                ActionPrevious:
+                    title: 'Assistente Luna'
+                    on_release:app.root.current = 'telainicio'
+
+        ScrollView:
+            BoxLayout:
+                orientation:'vertical'
+                Label:
+                    id: Sobre
+                    text: 'https://github.com/Onda-Software/Projeto-Luna'

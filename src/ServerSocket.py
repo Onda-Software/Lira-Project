@@ -6,7 +6,7 @@ import socket, threading, os, json, platform, gc
 gc.enable()
 
 HOST = "0.0.0.0"
-PORT = 7222
+PORT = 7229
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
@@ -14,11 +14,11 @@ server.listen()
 
 os_type = platform.system()
 
-#if   os_type == 'Windows': os.system('clear-host')
-#elif os_type == 'Linux'  : os.system('clear')
+if   os_type == 'Windows': os.system('cls')
+elif os_type == 'Linux'  : os.system('clear')
 
-print(f"\nServer started...")
-print(f"{os_type} - {HOST}:{PORT}")
+print(f"\n[-] Server started...")
+print(f"[-] {os_type} - {HOST}:{PORT}")
 
 clients, usernames = [], []
 database, model = 0x00, 0x00
@@ -30,11 +30,11 @@ async def ModelRender():
         database = DatabaseModel
         await database.init()
         
-        print('\nChecking database...')
+        print('\n[-] Checking database...')
         
-        for data_file in os.listdir('./database/data/'):
+        for data_file in os.listdir('./database/data/definitive/'):
             
-            json_datas = json.load(open(f'./database/data/{data_file}'))
+            json_datas = json.load(open(f'./database/data/definitive/{data_file}'))
              
             for data in json_datas:    
                 
@@ -42,8 +42,8 @@ async def ModelRender():
                     pass
                 else:
                     await database.InsertData(data['id'], data['text'])
-        
-        print('Insertion was been completed...\n')
+         
+        print('[-] Check was been completed...\n')
         
         dataset = await database.findAll()
         multilayerPerceptron = MultilayerPerceptron(dataset)
@@ -52,7 +52,7 @@ async def ModelRender():
     return MultilayerPerceptron.load_model(f'./models/{os_type}/sequential.keras')
 
 model = asyncio.run(ModelRender())
-print("\nWaiting for client request...")
+print("\n[-] Waiting for client request...")
 
 def handleMessages(client, username):
     
@@ -65,15 +65,16 @@ def handleMessages(client, username):
 
             if (seed_text.__eq__('exit') != True and seed_text.__eq__('') != True):
                 
-                print(f'\n{username}: seed text ({seed_text}), size of predict ({size_predict})')                
+                print(f'\n[-] {username}: seed text ({seed_text}), size of predict ({size_predict})')                
                 predict = MultilayerPerceptron.predict_text(seed_text, int(size_predict), model)
+                print(f'[-] predict: {predict}')
                 client.send(f'{predict}'.encode())
              
             else:
                 client.close()
                 usernames.remove(username)
 
-                print(f'\n\nUser {username} left the server...\n')
+                print(f'\n\n[-] User {username} left the server...\n')
                 break
         
         except Exception as exception:
@@ -82,7 +83,7 @@ def handleMessages(client, username):
             usernames.remove(username)
             
             print(exception)
-            print(f'\n\nUser {username} left the server...\n')
+            print(f'\n\n[-] User {username} left the server...\n')
             break
    
 def initialConnection():
@@ -91,7 +92,7 @@ def initialConnection():
         
         client, address = server.accept()
 
-        print(f'\nNew Connection: {str(address)}')
+        print(f'\n[-] New Connection: {str(address)}')
         clients.append(client)
         
         username = f"C{address[1]}"

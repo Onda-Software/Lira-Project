@@ -35,7 +35,7 @@ async def init():
 
     global client 
     client = AsyncIOMotorClient(
-        "mongodb://root:example@localhost:27017/"
+        "mongodb://localhost:27017/"
     )
     
     await init_beanie(
@@ -45,6 +45,8 @@ async def init():
         ],
     )
 
+    return True
+
 async def InsertData(key, text):
      
     if(key == '' or text == ''):
@@ -53,7 +55,9 @@ async def InsertData(key, text):
     data = DataDocument(key = key, text = text)
 
     await DataDocument.insert_one(data)
- 
+
+    return True
+
 async def findAll():
     
     datas = []
@@ -64,8 +68,8 @@ async def findAll():
     
     return datas
 
-async def findOne(field, index):
-    return await DataDocument.find({field: index}).to_list()
+async def findOne(index, field):
+    return await DataDocument.find({"key": index, "text": field}).to_list()
     
 class runner(Task):
 

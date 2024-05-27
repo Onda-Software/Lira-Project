@@ -9,7 +9,7 @@ gc.enable()
 
 class MultilayerPerceptron():
 
-    def __init__(self, dataset) -> None:    
+    def __init__(self, dataset) -> None:  
         self.dataset = dataset
     
     @staticmethod
@@ -100,7 +100,7 @@ class MultilayerPerceptron():
                      
                     model.fit(x=x, y=y, validation_data=[x, y], epochs=1, callbacks=[tensorboard_callback])
                 else:
-                    model.fit(x=x, y=y, epochs=100, callbacks=[model_checkpoint_callback])
+                    model.fit(x=x, y=y, epochs=1000, callbacks=[model_checkpoint_callback])
                     #model.train_on_batch(x=x, y=y)
                 
                 model.summary()
@@ -112,14 +112,15 @@ class MultilayerPerceptron():
     @staticmethod
     def predict_text(seed_text, predict_length, model):
         
+        predict = seed_text
         tokenizer = joblib.load('./tokenizers/tokenizer.gz')
-
+        
         for _ in range(predict_length):
             
             with open('database/max_sequence_length.txt', 'r') as reader:
                 max_sequence_length = int(reader.read())
- 
-            token_list = tokenizer.texts_to_sequences([seed_text])[0]
+            
+            token_list = tokenizer.texts_to_sequences([predict])[0]
             token_list = keras.preprocessing.sequence.pad_sequences([token_list], maxlen=max_sequence_length, padding='pre')
              
             predicted_probabilities = model.predict(token_list)[0]
@@ -132,6 +133,9 @@ class MultilayerPerceptron():
                     output_word = word
                     break
             
-            seed_text += " " + output_word
+            predict += " " + output_word
         
-        return seed_text
+        predict = predict.replace(seed_text + " ", "")
+        predict = predict[0].upper() + predict[1:]
+
+        return predict

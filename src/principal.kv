@@ -15,10 +15,13 @@
     
     BoxLayout:
         orientation: 'vertical'
+        spacing: 20
         
         Label:
-            text: 'Olá mundo' 
-            font_size: 40
+            text: 'Olá etequiano' 
+            font_size: 120
+            size_hint_y: 0.4
+            color: 255/255, 255/255, 240/255
 
         Button:
             id: botaochat
@@ -32,6 +35,39 @@
             font_size: 25
             on_release: app.root.current = 'telainfo'
 
+        BordaBotao:
+            id: botaochat
+            size_hint: (0.8,0.5)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            text: 'Converse\ncom a Luna'
+            color: 255/255, 255/255, 240/255
+            font_size: 25
+            on_release: app.root.current = 'telachat'
+            multiline: True
+
+        BordaBotao:
+            id: botaoinfo
+            size_hint: (0.8,0.5)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            text: 'Sobre nós'
+            color: 255/255, 255/255, 240/255
+            font_size: 25
+            on_release: app.root.current = 'telainfo'
+
+        Widget:  # Adiciona um espaço vazio entre os botões
+            size_hint_y: None
+            height: 20
+
+<BordaBotao@Button>:
+    background_color: (0,0,0,0)
+    canvas.before:
+        Color:
+            rgba: (243/255, 154/255, 75/255, 1)
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [10]
+
 <TelaChat>:
 
     BoxLayout:
@@ -42,6 +78,7 @@
             ActionView:
                 ActionPrevious:
                     title: 'Assistente Luna'
+                    color: 255/255, 255/255, 240/255
                     on_release:app.root.current = 'telainicio'
 
         ScrollView:
@@ -54,23 +91,46 @@
         BoxLayout:
             size_hint_y: None
             height: 60
-
-            TextInput:
-                id : texto
-                font_size: 20
-                size_hint: 0.8, None
-                height: self.minimum_height
-                background_color: 0.2, 0.2, 0.2, 1
-                foreground_color: 1, 1, 1, 1
-                hint_text: "Digite algo aqui"
-                hint_text_color: 0.5, 0.5, 0.5, 1
-
-            Button:
-                text: 'Enviar'
-                size_hint_x: None
+            padding: [6, 5, 6, 5]
+            spacing: 11
+            BoxLayout:
+                size_hint_x: 0.8
+                #padding: [10, 10]
+                RelativeLayout: #parte do textinput
+                    canvas:
+                        Color:
+                            rgba: 0, 0, 0, 0.59
+                        RoundedRectangle:
+                            size: self.width, self.height * 3
+                            pos: self.pos
+                            radius: [10]
+                    RoundedTextInput:
+                        id: texto
+                        font_size: 20
+                        padding: [15, 16] 
+                        size_hint: None, None
+                        size: self.parent.width, self.parent.height * 3
+                        hint_text: "Digite algo aqui"
+            RelativeLayout: #parte do botão 'enviar'
+                size_hint: None, 1
                 width: 50
-                on_release: app.root.get_screen('telachat').addComent()
+                #padding: [0,16,0,0]       
+                BordaBotao:
+                    text: 'Enviar'
+                    color: 255/255, 255/255, 240/255
+                    size_hint: None, None
+                    height: self.parent.height
+                    padding: [15,16]
+                    pos_hint: {'center_y': 0.6} 
+                    size: self.parent.width, self.parent.height 
+                    on_release: app.root.get_screen('telachat').addComent(texto.text)
 
+<RoundedTextInput@TextInput>:
+    background_color: (0,0,0,0)
+    foreground_color: 255/255, 255/255, 240/255, 1
+    hint_text_color: 0.5, 0.5, 0.5, 1
+    cursor_color: 1,0,0,1
+    
 <CaixaComentario>:
 
     size_hint_y: None

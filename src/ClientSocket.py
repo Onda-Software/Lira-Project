@@ -5,6 +5,7 @@ from kivymd.theming import Window
 from kivy.uix.widget import Widget
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.textinput import TextInput
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 SERVER_IP = "18.234.112.194"
@@ -15,6 +16,9 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 class Gerenciador(ScreenManager): 
     pass
 
+class RoundedTextInput(TextInput):
+    pass
+
 class TelaInicio(Screen): 
     pass
 
@@ -22,8 +26,8 @@ class TelaInfo(Screen):
     pass
 
 class TelaChat(Screen):
- 
-    def addComent(self):
+     
+    def addComent(self, *args):
         
         input = self.ids.texto.text
         caixa_comentario = CaixaComentario(text=input)
@@ -38,6 +42,7 @@ class TelaChat(Screen):
         self.ids.caixa_texto.add_widget(caixa_comentario)
         self.ids.caixa_texto.add_widget(Widget(size_hint_y=None, height=15))
         self.ids.caixa_texto.add_widget(CaixaComentarioLuna(predict))
+        print(f"Predict: {predict}")
 
         caixa_comentario.altera_tamanho_caixa()
         self.ids.texto.text = ''

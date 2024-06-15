@@ -5,8 +5,8 @@ import socket, threading, os, json, platform, gc
 
 gc.enable()
 
-HOST = "0.0.0.0"
-PORT = 7229
+HOST = "127.0.0.1"
+PORT = 7220
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
@@ -66,7 +66,7 @@ def handleMessages(client, username):
             if (seed_text.__eq__('exit') != True and seed_text.__eq__('') != True):
                 
                 print(f'\n[-] {username}: seed text ({seed_text}), size of predict ({size_predict})')                
-                predict = MultilayerPerceptron.predict_text(seed_text, int(size_predict), model)
+                predict = MultilayerPerceptron.predict_text(seed_text, int(50), model)
                 print(f'[-] predict: {predict}')
                 client.send(f'{predict}'.encode())
              

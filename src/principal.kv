@@ -18,43 +18,31 @@
         spacing: 20
         
         Label:
-            text: 'Olá etequiano' 
+            text: 'Tudo Certo?' 
             font_size: 120
             size_hint_y: 0.4
-            color: 255/255, 255/255, 240/255
-
-        Button:
-            id: botaochat
-            text: 'Pressione para conversar com o chat'
-            font_size: 25
-            on_release: app.root.current = 'telachat'
-        
-        Button:
-            id: botaoinfo
-            text: 'Sobre nós'
-            font_size: 25
-            on_release: app.root.current = 'telainfo'
+            color: 27/255, 27/255, 27/255
 
         BordaBotao:
             id: botaochat
             size_hint: (0.8,0.5)
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             text: 'Converse\ncom a Luna'
-            color: 255/255, 255/255, 240/255
+            color: 250/255, 250/255, 250/255
             font_size: 25
             on_release: app.root.current = 'telachat'
             multiline: True
-
+        
         BordaBotao:
             id: botaoinfo
             size_hint: (0.8,0.5)
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             text: 'Sobre nós'
-            color: 255/255, 255/255, 240/255
+            color: 250/255, 250/255, 250/255
             font_size: 25
             on_release: app.root.current = 'telainfo'
-
-        Widget:  # Adiciona um espaço vazio entre os botões
+        
+        Widget:
             size_hint_y: None
             height: 20
 
@@ -75,11 +63,21 @@
         orientation:'vertical'
 
         ActionBar:
+            height: '80dp'
+            
             ActionView:
+                size_hint_x: 1
+                
                 ActionPrevious:
-                    title: 'Assistente Luna'
+                    on_release:app.root.current = 'telainicio'    
                     color: 255/255, 255/255, 240/255
-                    on_release:app.root.current = 'telainicio'
+                    app_icon: 'luna_icon.png'
+                
+                ActionLabel:
+                    text: 'Assistente Luna'
+                    font_size: '24sp'
+                    width: self.texture_size[0]
+                    x: root.x + 300
 
         ScrollView:
             BoxLayout:
@@ -93,28 +91,34 @@
             height: 60
             padding: [6, 5, 6, 5]
             spacing: 11
+            
             BoxLayout:
                 size_hint_x: 0.8
-                #padding: [10, 10]
-                RelativeLayout: #parte do textinput
+                
+                RelativeLayout:
                     canvas:
                         Color:
-                            rgba: 0, 0, 0, 0.59
+                            rgba: 255/255, 255/255, 255/255, 1
+                            
                         RoundedRectangle:
                             size: self.width, self.height * 3
                             pos: self.pos
                             radius: [10]
+                    
                     RoundedTextInput:
                         id: texto
-                        font_size: 20
+                        font_size: 60
+                        text_color: 92/255, 88/255, 88/255
                         padding: [15, 16] 
                         size_hint: None, None
-                        size: self.parent.width, self.parent.height * 3
-                        hint_text: "Digite algo aqui"
-            RelativeLayout: #parte do botão 'enviar'
+                        size: self.parent.width, self.parent.height * 3.3
+                        hint_text: "Comece por aqui..."
+                        hint_text_color: 92/255, 88/255, 88/255
+                    
+            RelativeLayout:
                 size_hint: None, 1
                 width: 50
-                #padding: [0,16,0,0]       
+                
                 BordaBotao:
                     text: 'Enviar'
                     color: 255/255, 255/255, 240/255
@@ -127,25 +131,23 @@
 
 <RoundedTextInput@TextInput>:
     background_color: (0,0,0,0)
-    foreground_color: 255/255, 255/255, 240/255, 1
-    hint_text_color: 0.5, 0.5, 0.5, 1
-    cursor_color: 1,0,0,1
+    foreground_color: 52/255, 52/255, 52/255
+    cursor_color: 255/255, 0/255, 255/255
     
 <CaixaComentario>:
-
     size_hint_y: None
     size_hint_x: 0.8
     pos_hint: {'right': 1}
-
+    
     Label:
         id: resposta_dinamica
         
         canvas.before:
             Color:
-                rgba: 0.1, 0.5, 0.1, 1
+                rgba: 153/255, 102/255, 204/255, 1
             RoundedRectangle:
-                pos: self.pos[0] - self.padding[0] + 25, self.pos[1] + self.padding[1]
-                size: self.texture_size[0] + 2 * self.padding[0], self.texture_size[1] + 2 * self.padding[1] + 15
+                pos: self.pos
+                size: self.width, self.height
                 radius: [10,]
         
         padding: 15, -3, 2, 1
@@ -153,11 +155,10 @@
         halign:'left'
         valign:'middle'
         text_size: self.width - 20, None
-        font_size: 20
+        font_size: 120
         size: self.texture_size
 
 <CaixaComentarioLuna>:
-    
     size_hint_y: None
     size_hint_x: 0.8
     
@@ -166,7 +167,7 @@
         
         canvas.before:
             Color:
-                rgba: 0.1, 0.5, 0.1, 1
+                rgba: 75/255, 0/255, 130/255, 0.8
             RoundedRectangle:
                 pos: self.pos[0] - self.padding[0], self.pos[1] + self.padding[1]
                 size: self.texture_size[0] + 2 * self.padding[0], self.texture_size[1] + 2 * self.padding[1] + 15
@@ -178,22 +179,45 @@
         valign: 'middle'
         text_size: self.width - 20, None
         size: self.texture_size
-        font_size: 20
+        font_size: 120
 
 <TelaInfo>:
-
+    
     BoxLayout:
         orientation:'vertical'
+        
         ActionBar:
+            height: '80dp'
             pos_hint: {'top': 1}
+            
             ActionView:
+                
                 ActionPrevious:
-                    title: 'Assistente Luna'
+                    color: 255/255, 255/255, 240/255
                     on_release:app.root.current = 'telainicio'
-
-        ScrollView:
-            BoxLayout:
-                orientation:'vertical'
-                Label:
-                    id: Sobre
-                    text: 'https://github.com/Onda-Software/Projeto-Luna'
+                    app_icon: 'luna_blank_image.png'
+                
+                ActionLabel:
+                    text: 'Sobre nosso projeto'
+                    font_size: '24sp'
+                    width: self.texture_size[0]
+                    x: root.x + 100
+        BoxLayout:
+            orientation:'vertical'
+            
+            FloatLayout:
+                Image:
+                    source: 'luna_aceno-removebg.png'
+                    size_hint: 1, 1
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.3}
+            
+            Label:
+                id: Sobre
+                text: 'https://github.com/Onda-Software/Luna'
+                halign: 'justify' 
+                valign: 'middle' 
+                text_size: self.size 
+                size_hint: 0.6, 0.9
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5} 
+                font_size: '20sp'
+                color: 27/255, 27/255, 27/255

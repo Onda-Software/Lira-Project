@@ -132,6 +132,7 @@ class MultilayerPerceptron():
         
         predict = predict.replace(seed_text + " ", "")
         predict = predict[0].upper() + predict[1:]
-        predict = predict[:predict.index(".")+1] 
+        if (predict.find(".") != -1):
+            predict = predict[:predict.index(".")+1] 
 
         return predict

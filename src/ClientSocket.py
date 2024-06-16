@@ -1,6 +1,5 @@
 import socket, threading
 from time import sleep
-from kivy.utils import platform
 from kivymd.theming import Window
 from kivy.uix.widget import Widget
 from kivy.app import App
@@ -8,30 +7,30 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.screenmanager import ScreenManager, Screen
 
-SERVER_IP = "18.234.112.194"
+SERVER_IP = "54.84.86.93"
 PORT = 7229
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-class Gerenciador(ScreenManager): 
+class RoundedTextInput(TextInput):
     pass
 
-class RoundedTextInput(TextInput):
+class Gerenciador(ScreenManager): 
     pass
 
 class TelaInicio(Screen): 
     pass
 
-class TelaInfo(Screen):
-    pass
-
 class TelaChat(Screen):
      
+    def __init__(self, **kwargs):
+        super(TelaChat, self).__init__(**kwargs)
+     
     def addComent(self, *args):
-        
+         
         input = self.ids.texto.text
         caixa_comentario = CaixaComentario(text=input)
-
+        
         client.send(f'{input}'.encode())
         sleep(0.5)
         client.send(f'{int(18)}'.encode())
@@ -79,18 +78,19 @@ class CaixaComentarioLuna(BoxLayout):
         min_height = 50
         self.height = size[1] + self.padding[1] * 2
     
+class TelaInfo(Screen):
+    pass
+    
 class Principal(App):
 
     def build(self):
-
-        if(platform == 'android' or platform == 'ios'):
-            Window.maximize()
-         
-        Window.clearcolor = 169/255, 169/255, 169/255, 0/255    
+    	
+        Window.clearcolor = 220/255, 220/255, 220/255
+        
         self.connect()
         return Gerenciador()
     
-    def connect(self): 
+    def connect(self):
         client.connect((SERVER_IP, PORT))
         client.recv(1024).decode()
     

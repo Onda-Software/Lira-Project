@@ -67,7 +67,8 @@ def handleMessages(client, username):
                 
                 with open('./database/data/black-list/list.txt') as black_list:
                     for word in black_list:
-                        if (str(seed_text).find(word) == -1):
+                        word = word.strip()
+                        if (str(seed_text).find(str(word)) != -1):
                             client.send("Desculpe! Mas de acordo com minhas diretrizes, não posso realizar nenhuma tarefa deste tipo.".encode())
                         
                 print(f'\n[-] {username}: seed text ({seed_text}), size of predict ({size_predict})')                

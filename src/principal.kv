@@ -12,36 +12,37 @@
         name: 'telainfo'
 
 <TelaInicio>:
-    
+
     BoxLayout:
+
         orientation: 'vertical'
         spacing: 20
-        
+
         Label:
-            text: 'Tudo Certo?' 
+            text: 'Bem-vindo à\nAssistente Luna' 
             font_size: 120
             size_hint_y: 0.4
             color: 27/255, 27/255, 27/255
-
-        BordaBotao:
-            id: botaochat
-            size_hint: (0.8,0.5)
-            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-            text: 'Converse\ncom a Luna'
-            color: 250/255, 250/255, 250/255
-            font_size: 25
-            on_release: app.root.current = 'telachat'
-            multiline: True
         
         BordaBotao:
+            id: botaochat
+            size_hint: (0.8,0.2)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            text: 'Começar uma \nconversa'
+            color: 250/255, 250/255, 250/255
+            font_size: 80
+            on_release: app.root.current = 'telachat'
+            multiline: True
+
+        BordaBotao:
             id: botaoinfo
-            size_hint: (0.8,0.5)
+            size_hint: (0.8,0.2)
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             text: 'Sobre nós'
             color: 250/255, 250/255, 250/255
-            font_size: 25
+            font_size: 80
             on_release: app.root.current = 'telainfo'
-        
+
         Widget:
             size_hint_y: None
             height: 20
@@ -50,43 +51,42 @@
     background_color: (0,0,0,0)
     canvas.before:
         Color:
-            rgba: (243/255, 154/255, 75/255, 1)
+            rgba: 153/255, 102/255, 204/255, 1
         RoundedRectangle:
-            size: self.size
+            size: (self.width * 1, self.height)
             pos: self.pos
-            radius: [10]
+            radius: [70]
 
 <TelaChat>:
 
     BoxLayout:
 
         orientation:'vertical'
-
+        
         ActionBar:
             height: '80dp'
             
             ActionView:
                 size_hint_x: 1
-                
                 ActionPrevious:
                     on_release:app.root.current = 'telainicio'    
                     color: 255/255, 255/255, 240/255
-                    app_icon: 'luna_icon.png'
-                
+                    app_icon: './icons/luna_icon.png'
                 ActionLabel:
                     text: 'Assistente Luna'
                     font_size: '24sp'
                     width: self.texture_size[0]
                     x: root.x + 300
-
+            
         ScrollView:
             BoxLayout:
                 id: caixa_texto
                 orientation: 'vertical'
                 size_hint_y: None
                 height: self.minimum_height
-
+            
         BoxLayout:
+            
             size_hint_y: None
             height: 60
             padding: [6, 5, 6, 5]
@@ -94,40 +94,44 @@
             
             BoxLayout:
                 size_hint_x: 0.8
-                
-                RelativeLayout:
+                #padding: [10, 10]
+                RelativeLayout: #parte do textinput
                     canvas:
                         Color:
                             rgba: 255/255, 255/255, 255/255, 1
-                            
                         RoundedRectangle:
-                            size: self.width, self.height * 3
                             pos: self.pos
-                            radius: [10]
+                            size: (self.width * 0.9, self.height * 3)
+                            radius: [70]
                     
                     RoundedTextInput:
                         id: texto
-                        font_size: 60
+                        font_size: 80
                         text_color: 92/255, 88/255, 88/255
-                        padding: [15, 16] 
-                        size_hint: None, None
-                        size: self.parent.width, self.parent.height * 3.3
-                        hint_text: "Comece por aqui..."
+                        padding: [40, 10] 
+                        size_hint: 0.9, None
+                        height: self.parent.height * 3
+                        hint_text: "Escreva aqui..."
                         hint_text_color: 92/255, 88/255, 88/255
-                    
-            RelativeLayout:
-                size_hint: None, 1
-                width: 50
+            
+            RelativeLayout: #parte do botão 'enviar'
+                size_hint: None, 1       
                 
                 BordaBotao:
-                    text: 'Enviar'
                     color: 255/255, 255/255, 240/255
                     size_hint: None, None
-                    height: self.parent.height
-                    padding: [15,16]
-                    pos_hint: {'center_y': 0.6} 
-                    size: self.parent.width, self.parent.height 
+                    height: self.parent.height * 5
+                    padding: [15,10]
+                    pos_hint: {'center_y': 1.55, 'center_x': 0} 
+                    size: self.parent.width * 1.5, self.parent.height * 3
                     on_release: app.root.get_screen('telachat').addComent(texto.text)
+                    Image:
+                        source: './icons/send.png'
+                        size_hint: None, None
+                        size: 70,70
+                        center_x: self.parent.center_x
+                        center_y: self.parent.center_y
+
 
 <RoundedTextInput@TextInput>:
     background_color: (0,0,0,0)
@@ -135,16 +139,17 @@
     cursor_color: 255/255, 0/255, 255/255
     
 <CaixaComentario>:
+
     size_hint_y: None
     size_hint_x: 0.8
     pos_hint: {'right': 1}
-    
+
     Label:
-        id: resposta_dinamica
         
+        id: resposta_dinamica
         canvas.before:
             Color:
-                rgba: 153/255, 102/255, 204/255, 1
+                rgba: 153/255, 102/255, 204/255, 1  # Cor do balão de mensagem enviada
             RoundedRectangle:
                 pos: self.pos
                 size: self.width, self.height
@@ -159,12 +164,13 @@
         size: self.texture_size
 
 <CaixaComentarioLuna>:
+    
     size_hint_y: None
     size_hint_x: 0.8
     
     Label:
-        id: resposta_dinamica
         
+        id: resposta_dinamica
         canvas.before:
             Color:
                 rgba: 75/255, 0/255, 130/255, 0.8
@@ -182,21 +188,16 @@
         font_size: 120
 
 <TelaInfo>:
-    
     BoxLayout:
         orientation:'vertical'
-        
         ActionBar:
             height: '80dp'
             pos_hint: {'top': 1}
-            
             ActionView:
-                
                 ActionPrevious:
                     color: 255/255, 255/255, 240/255
                     on_release:app.root.current = 'telainicio'
-                    app_icon: 'luna_blank_image.png'
-                
+                    app_icon: ' '
                 ActionLabel:
                     text: 'Sobre nosso projeto'
                     font_size: '24sp'
@@ -204,17 +205,15 @@
                     x: root.x + 100
         BoxLayout:
             orientation:'vertical'
-            
             FloatLayout:
                 Image:
-                    source: 'luna_aceno-removebg.png'
+                    source: './icons/luna_aceno-removebg.png'
                     size_hint: 1, 1
                     pos_hint: {'center_x': 0.5, 'center_y': 0.3}
-            
             Label:
                 id: Sobre
-                text: 'https://github.com/Onda-Software/Luna'
-                halign: 'justify' 
+                text: 'Esse é o projeto de TCC da Onda Software™, a Assistente Luna. Nele você pode conversar com nossa inteligência artificial, desenvolvida para te ajudar durante sua jornada aqui na Etec. Bom aproveito!'
+                halign: 'left' 
                 valign: 'middle' 
                 text_size: self.size 
                 size_hint: 0.6, 0.9

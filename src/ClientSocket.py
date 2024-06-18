@@ -7,7 +7,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.screenmanager import ScreenManager, Screen
 
-SERVER_IP = "54.84.86.93"
+SERVER_IP = "52.55.131.225"
 PORT = 7229
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

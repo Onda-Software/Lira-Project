@@ -12,5 +12,4 @@ A Luna é uma ideia de uma assistente virtual / inteligencia artificial feita pa
 - Python v.3.11.9
 - Pip v.24.0
 
-## Dependências
-[requeriments.txt](https://github.com/Onda-Software/Luna/blob/main/requirements.txt)
+## [Dependências](https://github.com/Onda-Software/Luna/blob/main/requirements.txt)

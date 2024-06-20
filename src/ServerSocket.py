@@ -70,11 +70,11 @@ def handleMessages(client, username):
                         word = word.strip()
                         if (str(seed_text).find(str(word)) != -1):
                             client.send("Desculpe! Mas de acordo com minhas diretrizes, não posso realizar nenhuma tarefa deste tipo.".encode())
-                        
-                print(f'\n[-] {username}: seed text ({seed_text}), size of predict ({size_predict})')                
-                predict = MultilayerPerceptron.predict_text(seed_text, int(50), model)
-                print(f'[-] predict: {predict}')
-                client.send(f'{predict}'.encode()) 
+                        else:
+                            print(f'\n[-] {username}: seed text ({seed_text}), size of predict ({size_predict})')                
+                            predict = MultilayerPerceptron.predict_text(seed_text, int(50), model)
+                            print(f'[-] predict: {predict}')
+                            client.send(f'{predict}'.encode()) 
             
             else:
                 client.close()

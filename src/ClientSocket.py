@@ -1,8 +1,8 @@
 import socket, threading
 from time import sleep
-from kivymd.theming import Window
-from kivy.uix.widget import Widget
 from kivy.app import App
+from kivy.core.window import Window
+from kivy.uix.widget import Widget
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.screenmanager import ScreenManager, Screen

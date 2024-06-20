@@ -94,9 +94,9 @@ class MultilayerPerceptron():
         if log == True:
             log_dir = "./logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
             tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)   
-            model.fit(x=x, y=y, validation_data=[x, y], epochs=10, callbacks=[tensorboard_callback])
+            model.fit(x=x, y=y, validation_data=[x, y], epochs=250, callbacks=[tensorboard_callback])
         else:
-            model.fit(x=x, y=y, epochs=10, callbacks=[model_checkpoint_callback])
+            model.fit(x=x, y=y, epochs=250, callbacks=[model_checkpoint_callback])
         
         model.summary()
         model.save(f"./models/{system}/sequential.keras")

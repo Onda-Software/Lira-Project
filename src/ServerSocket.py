@@ -84,6 +84,8 @@ def handleMessages(client, username):
                         else:
                             message_status = True 
                  
+                count = 0
+                verified = []
                 for file in os.listdir('./database/data/definitive/'):
                     if (question_status == True):
                         break
@@ -93,17 +95,22 @@ def handleMessages(client, username):
                             question = question.strip()
                             question = question.lower()
                             seed_text = seed_text.lower()
-                              
-                            for word in seed_text.split():
-                                if(question.find(word) != -1):
-                                    question_status = True
-                                    break
-                                else:
-                                    question_status = False
+                            
+                            if (count != 3):
+                                for word in seed_text.split():
+                                    if word not in verified:
+                                        if(question.find(word) != -1):
+                                            count += 1
+                                            verified.append(word)
+                                            print(count)
+                                            break
+                            else:
+                                break
                 
-                if (question_status == False):
+                if (count < 3):
                     client.send("Infelizmente não posso processar mensagens deste tipo. Que tal tentar novamente?".encode())
-                elif (message_status == True and question_status == True):
+                
+                elif (message_status == True):
                     print(f'\n[-] {username}: seed text ({seed_text}), size of predict ({size_predict})')                
                     predict = MultilayerPerceptron.predict_text(seed_text, int(20), model)
                     print(f'[-] predict: {predict}')

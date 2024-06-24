@@ -71,7 +71,7 @@
                 ActionPrevious:
                     on_release:app.root.current = 'telainicio'    
                     color: 255/255, 255/255, 240/255
-                    app_icon: './icons/luna_icon.png'
+                    app_icon: 'luna_icon.png'
                 ActionLabel:
                     text: 'Assistente Luna'
                     font_size: '24sp'
@@ -126,7 +126,7 @@
                     size: self.parent.width * 1.5, self.parent.height * 3
                     on_release: app.root.get_screen('telachat').addComent(texto.text)
                     Image:
-                        source: './icons/send.png'
+                        source: 'send.png'
                         size_hint: None, None
                         size: 70,70
                         center_x: self.parent.center_x
@@ -160,7 +160,7 @@
         halign:'left'
         valign:'middle'
         text_size: self.width - 20, None
-        font_size: 120
+        font_size: 100
         size: self.texture_size
 
 <CaixaComentarioLuna>:
@@ -185,7 +185,7 @@
         valign: 'middle'
         text_size: self.width - 20, None
         size: self.texture_size
-        font_size: 120
+        font_size: 100
 
 <TelaInfo>:
     BoxLayout:
@@ -207,7 +207,7 @@
             orientation:'vertical'
             FloatLayout:
                 Image:
-                    source: './icons/luna_aceno-removebg.png'
+                    source: 'luna_aceno-removebg.png'
                     size_hint: 1, 1
                     pos_hint: {'center_x': 0.5, 'center_y': 0.3}
             Label:

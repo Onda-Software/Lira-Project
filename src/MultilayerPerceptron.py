@@ -4,6 +4,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import datetime, joblib, keras, gc
 import numpy as np
 import tensorflow as tf
+from keras.callbacks import ReduceLROnPlateau
 
 gc.enable()
 
@@ -94,10 +95,16 @@ class MultilayerPerceptron():
         if log == True:
             log_dir = "./logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
             tensorboard_callback = keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)   
-            model.fit(x=x, y=y, validation_data=[x, y], epochs=250, callbacks=[tensorboard_callback])
+            model.fit(x=x, y=y, validation_data=[x, y], epochs=500, callbacks=[tensorboard_callback])
         else:
-            model.fit(x=x, y=y, epochs=250, callbacks=[model_checkpoint_callback])
-        
+            #reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5)
+
+            # Treinando o modelo com os novos hiperparâmetros
+            model.fit(x=x, y=y, epochs=5)
+
+            #model.fit(x=x, y=y, epochs=1, callbacks=[model_checkpoint_callback])
+            #model.train_on_batch(x, y)
+
         model.summary()
         model.save(f"./models/{system}/sequential.keras")
 
